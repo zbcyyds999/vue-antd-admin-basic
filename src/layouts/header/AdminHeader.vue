@@ -1,24 +1,32 @@
 <template>
   <a-layout-header :class="[headerTheme, 'admin-header']">
     <div :class="['admin-header-wide', layout, pageWidth]">
+    <!-- 手机界面的顶栏 -->
       <router-link v-if="isMobile || layout === 'head'" to="/" :class="['logo', isMobile ? null : 'pc', headerTheme]">
         <img width="32" src="@/assets/img/logo.png" />
         <h1 v-if="!isMobile">{{systemName}}</h1>
       </router-link>
       <a-divider v-if="isMobile" type="vertical" />
+      <!-- 侧边栏切换按钮 -->
       <a-icon v-if="layout !== 'head'" class="trigger" :type="collapsed ? 'menu-unfold' : 'menu-fold'" @click="toggleCollapse"/>
+      <!-- 顶部目录, 不是侧边栏模式时才会显示  -->
       <div v-if="layout !== 'side' && !isMobile" class="admin-header-menu" :style="`width: ${menuWidth};`">
         <i-menu class="head-menu" :theme="headerTheme" mode="horizontal" :options="menuData" @select="onSelect"/>
       </div>
+      <!-- 顶部条,右侧的内容 -->
       <div :class="['admin-header-right', headerTheme]">
           <header-search class="header-item" @active="val => searchActive = val" />
+           <!-- 帮助文档 -->
           <a-tooltip class="header-item" title="帮助文档" placement="bottom" >
             <a href="https://iczer.gitee.io/vue-antd-admin-docs/" target="_blank">
               <a-icon type="question-circle-o" />
             </a>
           </a-tooltip>
+          <!-- 提示 -->
           <header-notice class="header-item"/>
+          <!-- 头像 -->
           <header-avatar class="header-item"/>
+          <!-- 国际化 -->
           <a-dropdown class="lang header-item">
             <div>
               <a-icon type="global"/> {{langAlias}}
@@ -55,16 +63,19 @@ export default {
   },
   computed: {
     ...mapState('setting', ['theme', 'isMobile', 'layout', 'systemName', 'lang', 'pageWidth']),
+    //判断主题
     headerTheme () {
       if (this.layout == 'side' && this.theme.mode == 'dark' && !this.isMobile) {
         return 'light'
       }
       return this.theme.mode
     },
+    //判断语言
     langAlias() {
       let lang = this.langList.find(item => item.key == this.lang)
       return lang.alias
     },
+    //目录宽度
     menuWidth() {
       const {layout, searchActive} = this
       const headWidth = layout === 'head' ? '100% - 188px' : '100%'
@@ -73,9 +84,11 @@ export default {
     }
   },
   methods: {
+    //打开关闭侧边栏
     toggleCollapse () {
       this.$emit('toggleCollapse')
     },
+    //顶部菜单选择 非侧边栏模式时触发
     onSelect (obj) {
       this.$emit('menuSelect', obj)
     },

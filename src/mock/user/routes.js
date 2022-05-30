@@ -1,11 +1,13 @@
 import Mock from 'mockjs'
+import { ROUTES } from '@/services/api'
 
-Mock.mock(`${process.env.VUE_APP_API_BASE_URL}/routes`, 'get', () => {
+Mock.mock(RegExp(`${ROUTES}` + ".*"), 'get', () => {
   let result = {}
   result.code = 0
   result.data = [{
     router: 'root',
-    children: ['demo',
+    children: [
+      'demo',
       {
         router: 'parent1',
         children: [{
@@ -18,11 +20,26 @@ Mock.mock(`${process.env.VUE_APP_API_BASE_URL}/routes`, 'get', () => {
         }],
       },
       {
+        router: 'test',
+        children: [
+          {
+            router: 'testPage',
+            name: '数据目'
+          },
+          {
+            router: 'Employee',
+            name: '员工健康信息'
+          }
+        ],
+      },
+      {
         router: 'parent2',
         children: [{
           router: 'demo',
           name: 'demo2'
-        }],
+        }
+          ,
+        ],
       },
       {
         router: 'exception',

@@ -44,6 +44,21 @@ const routerMap = {
     icon: 'dashboard',
     component: view.blank
   },
+  test: {
+    name: '测试页',
+    icon: 'dashboard',
+    component: view.blank
+  },
+  testPage: {
+    name: '测试页',
+    path: 'testp',
+    component: () => import('@/pages/test/test')
+  },
+  Employee: {
+    name: '员工健康信息',
+    path: 'employee',
+    component: () => import('@/pages/employee')
+  },
   parent2: {
     name: '父级路由2',
     icon: 'form',

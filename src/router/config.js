@@ -27,6 +27,14 @@ const options = {
       redirect: '/login',
       children: [
         {
+          path: 'test',
+          name: 'API测试页',
+          meta: {
+            icon: 'ie'
+          },
+          component: () => import('@/pages/test')
+        },
+        {
           path: 'demo',
           name: '演示页',
           meta: {
@@ -43,9 +51,9 @@ const options = {
           component: BlankView,
           children: [
             {
-              path: 'demo1',
-              name: '演示页面1',
-              component: () => import('@/pages/demo'),
+              path: 'employee',
+              name: '员工健康信息',
+              component: () => import('@/pages/employee'),
             }
           ]
         },

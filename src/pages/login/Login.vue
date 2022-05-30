@@ -109,13 +109,14 @@ export default {
       })
     },
     afterLogin(res) {
-      this.logging = false
-      const loginRes = res.data
+      this.logging = false //取消加载状态
+      const loginRes = res.data //获取请求返回的数据
       if (loginRes.code >= 0) {
-        const {user, permissions, roles} = loginRes.data
-        this.setUser(user)
-        this.setPermissions(permissions)
-        this.setRoles(roles)
+        const {user, permissions, roles} = loginRes.data //用解构方法解析用户，权限，角色
+        this.setUser(user) //设置用户 
+        this.setPermissions(permissions) //设置权限
+        this.setRoles(roles) //设置角色
+        // 设置授权
         setAuthorization({token: loginRes.data.token, expireAt: new Date(loginRes.data.expireAt)})
         // 获取路由配置
         getRoutesConfig().then(result => {
