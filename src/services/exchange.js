@@ -17,9 +17,10 @@ export async function getAll(page, pageSize, name, sfz, visitsHospital, outReaso
 export async function getSqList() {
     return request(sq_list, METHOD.GET)
 }
-export async function getOrgList(token) {
+export async function getOrgList(token,value) {
     return request(org_list, METHOD.GET,{
-        token:token
+        token:token,
+        value:value
     })
 }
 

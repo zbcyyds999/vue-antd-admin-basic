@@ -11,10 +11,11 @@
           <a-form-model-item label="人员姓名">
             <a-select
               show-search
-              placeholder="Select a person"
+              placeholder="请输入人员姓名"
               option-filter-prop="children"
               style="width: 200px"
               allowClear
+              @search="handleSearch"
               :filter-option="filterOption"
               @change="handleChange"
             >
@@ -52,9 +53,9 @@
           <a-form-model-item>
             <a-button @click="addNew" type="primary">新建</a-button>
           </a-form-model-item>
-          <a-form-model-item>
+          <!-- <a-form-model-item>
             <a-button type="primary">导出</a-button>
-          </a-form-model-item>
+          </a-form-model-item> -->
         </a-form-model>
       </a-space>
     </a-card>
@@ -101,7 +102,7 @@
               </a-select>
               <a-input v-model="secondCity" placeholder="请输入手机号" />
             </div> -->
-            <a-form-model-item label="人员姓名" prop="peopleName">
+            <!-- <a-form-model-item label="人员姓名">
               <a-select
                 v-model="form.peopleName"
                 @change="handleProvinceChange"
@@ -111,20 +112,31 @@
                   >{{ item.peoplename }}
                 </a-select-option>
               </a-select>
+            </a-form-model-item> -->
+            <a-form-model-item label="人员姓名" prop="peopleName">
+              <a-select
+                show-search
+                placeholder="请输入人员姓名"
+                option-filter-prop="children"
+                allowClear
+                v-model="form.peopleName"
+                @search="handleSearch"
+                :filter-option="filterOption"
+                @change="handleProvinceChange"
+              >
+                <a-select-option v-for="item in peopleInfo" :key="item.sfz"
+                  >{{ item.peoplename }}
+                </a-select-option>
+              </a-select>
+            </a-form-model-item>
+            <a-form-model-item label="身份证号" prop="orgpeopleId">
+              <a-input v-model="form.orgpeopleId" disabled />
             </a-form-model-item>
             <a-form-model-item label="专业" prop="specialty">
-              <a-input
-                v-model="form.specialty"
-                placeholder="请输入专业"
-                disabled
-              />
+              <a-input v-model="form.specialty" disabled />
             </a-form-model-item>
             <a-form-model-item label="派出医院" prop="dispatchHospital">
-              <a-input
-                v-model="form.dispatchHospital"
-                placeholder="请输入派出医院"
-                disabled
-              />
+              <a-input v-model="form.dispatchHospital" disabled />
             </a-form-model-item>
             <a-form-model-item label="出诊医院" prop="visitsHospital">
               <a-select
@@ -139,15 +151,15 @@
             <a-form-model-item label="转出时间" reqired prop="outDate">
               <a-date-picker
                 v-model="form.outDate"
-                placeholder="Pick a date"
+                placeholder="请选择转出时间"
                 style="width: 100%"
               />
             </a-form-model-item>
-            <a-form-model-item label="转归时间" required prop="inDate">
+            <a-form-model-item label="转归时间" prop="inDate">
               <a-date-picker
                 v-model="form.inDate"
                 type="date"
-                placeholder="Pick a date"
+                placeholder="请选择转归时间"
                 style="width: 100%"
               />
             </a-form-model-item>
@@ -218,36 +230,8 @@ const columns = [
   },
 ];
 const data = [];
-const Hospitals = [
-  {
-    orderNumber: 1,
-    orgname: "北京市西城区什刹海社区卫生服务中",
-  },
-  {
-    orderNumber: 2,
-    orgname: "北京市西城区什刹海社区卫生服务中心",
-  },
-];
-const peopleInfo = [
-  {
-    peoplename: "蔡雅玲",
-    specialty: "预防医学",
-    orgname: "西城社管中心",
-    sfz: "350600198602251528",
-  },
-  {
-    peoplename: "常新",
-    specialty: "临床医学",
-    orgname: "西城社管中心",
-    sfz: "220104196804171331",
-  },
-  {
-    peoplename: "陈淑红",
-    specialty: "护理",
-    orgname: "西城社管中心",
-    sfz: "110106196812163021",
-  },
-];
+const Hospitals = [];
+const peopleInfo = [];
 import {
   getAll,
   getSqList,
@@ -299,13 +283,13 @@ export default {
         onShowSizeChange: (current, pageSize) => {
           this.paginationOpt.defaultCurrent = 1;
           this.paginationOpt.defaultPageSize = pageSize;
-          this.getPageData(); //显示列表的接口名称
+          this.getData(); //显示列表的接口名称
         },
         // 改变每页数量时更新显示
         onChange: (current, size) => {
           this.paginationOpt.defaultCurrent = current;
           this.paginationOpt.defaultPageSize = size;
-          this.getPageData();
+          this.getData();
         },
       },
       rules: {
@@ -338,9 +322,6 @@ export default {
         outDate: [
           { required: true, message: "请填写转出时间", trigger: "change" },
         ],
-        inDate: [
-          { required: true, message: "请填写转归时间", trigger: "change" },
-        ],
       },
     };
   },
@@ -352,11 +333,14 @@ export default {
   created() {
     this.getData();
     this.getSqData();
-    // this.getPeopleInfo();
+    this.getPeopleInfo();
   },
   watch: {},
 
   methods: {
+    handleSearch(value) {
+      this.getPeopleInfo(value);
+    },
     handleProvinceChange(value) {
       this.peopleInfo.map((item) => {
         if (item.sfz == value) {
@@ -388,15 +372,22 @@ export default {
       getSqList().then((res) => {
         if (res.data.code == 200) {
           this.Hospitals = res.data.data;
+        } else {
+          this.$message.error({
+            content: res.data.msg,
+          });
         }
       });
     },
-    getPeopleInfo() {
+    getPeopleInfo(value) {
       const token = this.$route.query.token;
-      getOrgList(token).then((res) => {
+      getOrgList(token, value).then((res) => {
         if (res.data.code == 200) {
-          console.log(res.data.data);
           this.peopleInfo = res.data.data;
+        } else {
+          this.$message.error({
+            content: res.data.msg,
+          });
         }
       });
     },
@@ -432,10 +423,8 @@ export default {
     },
     // 编辑弹窗
     onEdit(res) {
-      console.log(res);
       this.title = "编辑";
       this.visible = true;
-      console.log(res);
       delete res.key;
       this.form = { ...res };
       this.form.outDate = this.$moment(res.outDate, "YYYY-MM-DD");
@@ -444,7 +433,6 @@ export default {
     // 删除操作
     delData(data) {
       data.state = "1";
-      console.log(data);
       updateTe(data).then((res) => {
         if (res.data.code == 200) {
           this.$message.success({
@@ -482,7 +470,15 @@ export default {
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
           if (this.title == "新增") {
-            const data = this.form;
+            const data = { ...this.form };
+            console.log(data);
+            data.inDate = this.$moment(data.inDate).format(
+              "YYYY-MM-DD"
+            );
+            data.outDate = this.$moment(data.outDate).format(
+              "YYYY-MM-DD"
+            );
+            console.log(data);
             addTe(data).then((res) => {
               if (res.data.code == 200) {
                 this.$message.success({
@@ -497,8 +493,14 @@ export default {
               }
             });
           } else {
-            const data = this.form;
-            console.log(data);
+            // this.form.outDate = new Date(
+            //   JSON.parse(JSON.stringify(this.form.outDate))
+            // ).getTime();
+            // this.form.inDate = new Date(
+            //   JSON.parse(JSON.stringify(this.form.inDate))
+            // ).getTime();
+            console.log(this.form);
+            const data = { ...this.form };
             updateTe(data).then((res) => {
               if (res.data.code == 200) {
                 this.$message.success({
