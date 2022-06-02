@@ -398,9 +398,9 @@ export default {
       form: this.$form.createForm(this),
       pagination: {
         pageNo: 1,
-        pageSize: 10, // 默认每页显示数量
+        pageSize: 5, // 默认每页显示数量
         showSizeChanger: true, // 显示可改变每页数量
-        pageSizeOptions: ["10", "20", "50", "100"], // 每页数量选项
+        pageSizeOptions: ["5", "20", "50", "100"], // 每页数量选项
         showTotal: (total) => `共 ${total} 条`, // 显示总数
         onShowSizeChange: (current, pageSize) =>
           this.onSizeChange(current, pageSize), // 改变每页数量时更新显示

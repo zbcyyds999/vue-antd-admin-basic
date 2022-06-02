@@ -9,9 +9,14 @@ const view = {
 const routerMap = {
   login: {
     authority: '*',
-    path: '/login',
-    component: () => import('@/pages/login')
+    path: '/exchange',
+    component: () => import('@/pages/exchange')
   },
+  // login: {
+  //   authority: '*',
+  //   path: '/login',
+  //   component: () => import('@/pages/login')
+  // },
   demo: {
     name: '演示页',
     renderMenu: false,
@@ -36,7 +41,7 @@ const routerMap = {
   root: {
     path: '/',
     name: '首页',
-    redirect: '/login',
+    redirect: '/exchange',
     component: view.tabs
   },
   parent1: {
@@ -55,9 +60,15 @@ const routerMap = {
     component: () => import('@/pages/test/test')
   },
   Employee: {
+    authority: '*',
     name: '员工健康信息',
     path: 'employee',
     component: () => import('@/pages/employee')
+  },
+  exchange: {
+    name: '医院信息',
+    path: 'exchange',
+    component: () => import('@/pages/exchange')
   },
   parent2: {
     name: '父级路由2',

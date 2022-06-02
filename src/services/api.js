@@ -13,4 +13,10 @@ module.exports = {
   yq_delete: `${BASE_URL}/yq-ms/delete`,
   yq_add: `${BASE_URL}/yq-ms/add`,
   SelectPage: `${BASE_URL}/yq-ms/selectPage`,
+
+  te_list: `${BASE_URL}/talentExchange/list`,
+  te_update: `${BASE_URL}/talentExchange/update`,
+  te_add: `${BASE_URL}/talentExchange/add`,
+  sq_list: `${BASE_URL}/Shequinfo/list`,
+  org_list: `${BASE_URL}/orgpeopleinfo/list`,
 }

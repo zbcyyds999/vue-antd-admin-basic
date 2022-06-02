@@ -1,6 +1,6 @@
 import {hasAuthority} from '@/utils/authority-utils'
-import {loginIgnore} from '@/router/index'
-import {checkAuthorization} from '@/utils/request'
+// import {loginIgnore} from '@/router/index'
+// import {checkAuthorization} from '@/utils/request'
 import NProgress from 'nprogress'
 
 NProgress.configure({ showSpinner: false })
@@ -26,16 +26,23 @@ const progressStart = (to, from, next) => {
  * @param next
  * @param options
  */
-const loginGuard = (to, from, next, options) => {
-  const {message} = options
-  if (!loginIgnore.includes(to) && !checkAuthorization()) {
-    message.warning('登录已失效，请重新登录')
-    next({path: '/login'})
-  } else {
-    next()
-  }
-}
-
+// const loginGuard = (to, from, next, options) => {
+//   const {message} = options
+//   if (!loginIgnore.includes(to) && !checkAuthorization()) {
+//     message.warning('登录已失效，请重新登录')
+//     next({path: '/login'})
+//   } else {
+//     next()
+//   }
+// }
+// const loginGuard = (to, from, next) => {
+//   if (!loginIgnore.includes(to) && !checkAuthorization()) {
+    
+//     next({path: '/login'})
+//   } else {
+//     next()
+//   }
+// }
 /**
  * 权限守卫
  * @param to
@@ -99,6 +106,8 @@ const progressDone = () => {
 }
 
 export default {
-  beforeEach: [progressStart, loginGuard, authorityGuard, redirectGuard],
+  // beforeEach: [progressStart, loginGuard, authorityGuard, redirectGuard],
+  beforeEach: [progressStart, authorityGuard, redirectGuard],
+
   afterEach: [progressDone]
 }

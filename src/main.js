@@ -6,17 +6,17 @@ import Antd from 'ant-design-vue'
 import Viser from 'viser-vue'
 import '@/mock'
 import store from './store'
-// import Moment from 'moment'
 import 'animate.css/source/animate.css'
 import 'ant-design-vue/dist/antd.css';
 import Plugins from '@/plugins'
 import {initI18n} from '@/utils/i18n'
 import bootstrap from '@/bootstrap'
-import 'moment/locale/zh-cn'
 const router = initRouter(store.state.setting.asyncRoutes)
 const i18n = initI18n('CN', 'US')
-
-// Vue.prototype.$moment = Moment;
+import moment from 'moment'
+import 'moment/locale/zh-cn'
+moment.locale('zh-cn') //设置语言 或 moment.lang('zh-cn'); 
+Vue.prototype.$moment = moment //挂载到当前vue实例对象
 Vue.use(Antd)
 Vue.config.productionTip = false
 Vue.use(Viser)

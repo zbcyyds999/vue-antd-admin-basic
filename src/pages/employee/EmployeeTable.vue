@@ -1,7 +1,7 @@
 <template>
   <div>
     <a-card>
-      <div>
+      <div style="height: 685px">
         <a-space class="operator">
           <a-form-model
             layout="inline"
@@ -52,6 +52,7 @@
           }"
           :columns="columns"
           :data-source="data"
+          :pagination="paginationOpt"
         >
           <div slot="action" slot-scope="text, record">
             <a slot="action" @click="onEdit(record)">编辑</a>
@@ -129,14 +130,6 @@
         </a-drawer>
       </div>
     </a-card>
-    <a-card>
-      <iframe
-        style="border: none"
-        :width="searchTableWidth"
-        :height="searchTableHeight"
-        v-bind:src="reportUrl"
-      ></iframe>
-    </a-card>
   </div>
 </template>
 <script>
@@ -180,10 +173,6 @@ export default {
   name: "EmployeeTable",
   data() {
     return {
-      reportUrl: "https://www.baidu.com/",
-      searchTableHeight: 0,
-      searchTableWidth: 0,
-
       title: "",
       visible: false,
       advanced: true,
@@ -208,16 +197,25 @@ export default {
         vaccineNum: "",
         homeDates: undefined,
       },
-      pagination: {
-        pageNo: 1,
-        pageSize: 10, // 默认每页显示数量
-        showSizeChanger: true, // 显示可改变每页数量
-        pageSizeOptions: ["10", "20", "50", "100"], // 每页数量选项
+      paginationOpt: {
+        defaultCurrent: 1, // 默认当前页数
+        defaultPageSize: 10, // 默认当前页显示数据的大小
+        total: 0, // 总数，必须先有
+        showSizeChanger: true,
+        showQuickJumper: true,
+        pageSizeOptions: ["5", "10", "15", "20"],
         showTotal: (total) => `共 ${total} 条`, // 显示总数
-        onShowSizeChange: (current, pageSize) =>
-          this.onSizeChange(current, pageSize), // 改变每页数量时更新显示
-        onChange: (page, pageSize) => this.onPageChange(page, pageSize), //点击页码事件
-        total: 0, //总条数
+        onShowSizeChange: (current, pageSize) => {
+          this.paginationOpt.defaultCurrent = 1;
+          this.paginationOpt.defaultPageSize = pageSize;
+          this.getPageData(); //显示列表的接口名称
+        },
+        // 改变每页数量时更新显示
+        onChange: (current, size) => {
+          this.paginationOpt.defaultCurrent = current;
+          this.paginationOpt.defaultPageSize = size;
+          this.getPageData();
+        },
       },
       rules: {
         employeeName: [
@@ -279,37 +277,45 @@ export default {
       return this.selectedRowKeys.length > 0;
     },
   },
-  mounted() {
-    window.onresize = () => {
-      this.widthHeight(); // 自适应高宽度
-    };
-    this.$nextTick(function () {
-      this.widthHeight();
-    });
-  },
   created() {
     this.getData();
-    // 从路由里动态获取 url地址   具体地址看libs下util.js里的 backendMenuToRoute  方法
-    this.reportUrl = "https://www.baidu.com/";
   },
-  watch: {
-    $route: function () {
-      // 监听路由变化
-      this.reportUrl = "https://www.baidu.com/";
-    },
-  },
+  watch: {},
 
   methods: {
-    widthHeight() {
-      this.searchTableHeight = window.innerHeight - 600;
-      this.searchTableWidth = window.innerWidth - 1000;
+    onShowSizeChange(current, pageSize) {
+      this.pageSize = pageSize;
+      this.getData();
     },
 
+    // 查询按钮
     handleSubmit() {
       this.data = [];
-      selectPage(this.Selectform).then((res) => {
+      this.getPageData();
+    },
+    // 初始化表格
+    getData() {
+      const { defaultCurrent, defaultPageSize } = this.paginationOpt;
+      getAll(defaultCurrent, defaultPageSize).then((res) => {
         if (res.data.code == 200) {
-          let arr = res.data.obj;
+          this.paginationOpt.total = res.data.obj.total;
+          let arr1 = res.data.obj.records;
+          arr1.forEach((item) => {
+            item.key = item.id;
+          });
+          this.data = arr1;
+        }
+      });
+    },
+    // 分页查询方法
+    getPageData() {
+      const { defaultCurrent, defaultPageSize } = this.paginationOpt;
+      const page = { current: defaultCurrent, pageSize: defaultPageSize };
+      const PageForm = Object.assign(this.Selectform, page);
+      selectPage(PageForm).then((res) => {
+        if (res.data.code == 200) {
+          this.paginationOpt.total = res.data.obj.total;
+          let arr = res.data.obj.records;
           arr.forEach((item) => {
             item.key = item.id;
           });
@@ -321,26 +327,6 @@ export default {
           this.$message.error({
             content: res.data.message,
           });
-        }
-      });
-    },
-    onPageChange(page) {
-      this.pagination.pageNo = page;
-      this.getData();
-    },
-    onSizeChange(pageSize) {
-      this.pagination.pageSize = pageSize;
-    },
-    getData() {
-      const current = this.pagination.pageNo;
-      const pageSize = this.pagination.pageSize;
-      getAll(current, pageSize).then((res) => {
-        if (res.data.code == 200) {
-          let arr1 = res.data.obj.records;
-          arr1.forEach((item) => {
-            item.key = item.id;
-          });
-          this.data = arr1;
         }
       });
     },
@@ -362,31 +348,37 @@ export default {
       this.title = "新增";
       this.visible = true;
     },
+    // 编辑弹窗
     onEdit(res) {
       this.title = "编辑";
       this.visible = true;
       this.form = res;
     },
-    onDel(res) {
+    // 删除操作
+    delData(id) {
+      deleteYq(id).then((res) => {
+        if (res.data.code == 200) {
+          this.$message.success({
+            content: res.data.message,
+          });
+          this.getData();
+        } else {
+          this.$message.error({
+            content: res.data.message,
+          });
+        }
+      });
+    },
+    onDel(id) {
+      let self = this;
       this.$confirm({
-        title: "确定删除该条信息?",
-        content: "Some descriptions",
+        title: "提示",
+        content: "确定删除该条信息？",
         okText: "确认",
         okType: "danger",
         cancelText: "取消",
         onOk() {
-          deleteYq(res).then((res) => {
-            if (res.data.code == 200) {
-              this.$message.success({
-                content: res.data.message,
-              });
-              this.getData();
-            } else {
-              this.$message.error({
-                content: res.data.message,
-              });
-            }
-          });
+          self.delData(id);
         },
         onCancel() {
           console.log("Cancel");
@@ -396,6 +388,7 @@ export default {
     onClose() {
       this.visible = false;
     },
+    // 抽屉提交按钮
     onSubmit() {
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
@@ -436,6 +429,7 @@ export default {
         }
       });
     },
+    // 抽屉重置按钮
     resetForm() {
       this.$refs.ruleForm.resetFields();
     },

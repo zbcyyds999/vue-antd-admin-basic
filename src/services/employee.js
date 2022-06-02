@@ -23,8 +23,8 @@ export async function deleteYq(id) {
 export async function addYq(data) {
     return request(yq_add, METHOD.POST, data)
 }
-export async function selectPage( yqMs) {
-    return request(SelectPage, METHOD.POST, yqMs   
+export async function selectPage(yqMs) {
+    return request(SelectPage, METHOD.POST,yqMs
     )
 }
 
