@@ -3,7 +3,6 @@
     <div>
       <a-space class="operator">
         <a-button @click="addNew" type="primary">新建</a-button>
-        <a-button>批量操作</a-button>
         <a-dropdown>
           <a-menu @click="handleMenuClick" slot="overlay">
             <a-menu-item key="delete">删除</a-menu-item>
@@ -12,13 +11,9 @@
           <a-button> 更多操作 <a-icon type="down" /> </a-button>
         </a-dropdown>
       </a-space>
-      <standard-table
+      <a-table
         :columns="columns"
         :dataSource="dataSource"
-        :selectedRows.sync="selectedRows"
-        @clear="onClear"
-        @change="onChange"
-        @selectedRowChange="onSelectChange"
         bordered
         :pagination="pagination"
       >
@@ -38,7 +33,7 @@
         <template slot="statusTitle">
           <a-icon @click.native="onStatusTitleClick" type="info-circle" />
         </template>
-      </standard-table>
+      </a-table>
 
       <a-drawer
         title="详情"
@@ -175,7 +170,6 @@
               </a-form-model-item>
             </a-col>
           </a-row>
-
           <a-row :gutter="16">
             <a-col :span="12">
               <a-form-model-item label="更新周期" prop="cycleItem">
@@ -226,7 +220,6 @@
 </template>
 
 <script>
-import StandardTable from "@/components/table/StandardTable";
 import { columns } from "./TableData";
 
 const dataSource = [];
@@ -349,10 +342,9 @@ const data = [
 
 export default {
   name: "QueryList",
-  components: { StandardTable },
   data() {
     return {
-      dateFormat: 'YYYY-MM-DD',
+      dateFormat: "YYYY-MM-DD",
       cycles: ["实时", "每日", "每周", "每月", "每季度", "每年"],
       dataTypes: [
         "字符型 C",
@@ -395,17 +387,25 @@ export default {
         releaseDate: null,
         sourceRange: "",
       },
-      form: this.$form.createForm(this),
       pagination: {
-        pageNo: 1,
-        pageSize: 5, // 默认每页显示数量
-        showSizeChanger: true, // 显示可改变每页数量
-        pageSizeOptions: ["5", "20", "50", "100"], // 每页数量选项
+        defaultCurrent: 1, // 默认当前页数
+        defaultPageSize: 10, // 默认当前页显示数据的大小
+        total: 0, // 总数，必须先有
+        showSizeChanger: true,
+        showQuickJumper: true,
+        pageSizeOptions: ["5", "10", "15", "20"],
         showTotal: (total) => `共 ${total} 条`, // 显示总数
-        onShowSizeChange: (current, pageSize) =>
-          this.onSizeChange(current, pageSize), // 改变每页数量时更新显示
-        onChange: (page, pageSize) => this.onPageChange(page, pageSize), //点击页码事件
-        total: 0, //总条数
+        onShowSizeChange: (current, pageSize) => {
+          this.paginationOpt.defaultCurrent = 1;
+          this.paginationOpt.defaultPageSize = pageSize;
+          this.getData(); //显示列表的接口名称
+        },
+        // 改变每页数量时更新显示
+        onChange: (current, size) => {
+          this.paginationOpt.defaultCurrent = current;
+          this.paginationOpt.defaultPageSize = size;
+          this.getData();
+        },
       },
       rules: {
         //表单验证
@@ -472,13 +472,7 @@ export default {
     this.aaa();
   },
   methods: {
-    onPageChange(page) {
-      this.pagination.pageNo = page;
-    },
-    onSizeChange(pageSize) {
-      this.pagination.pageNo = 1;
-      this.pagination.pageSize = pageSize;
-    },
+   
     //判断是弹出条件弹窗
     getSharing(value) {
       if (value == "有条件共享") {
@@ -532,25 +526,7 @@ export default {
     toggleAdvanced() {
       this.advanced = !this.advanced;
     },
-    remove() {
-      this.dataSource = this.dataSource.filter(
-        (item) =>
-          this.selectedRows.findIndex((row) => row.key === item.key) === -1
-      );
-      this.selectedRows = [];
-    },
-    onClear() {
-      this.$message.info("您清空了勾选的所有行");
-    },
-    onStatusTitleClick() {
-      this.$message.info("你点击了状态栏表头");
-    },
-    onChange() {
-      this.$message.info("表格状态改变了");
-    },
-    onSelectChange() {
-      this.$message.info("选中行改变了");
-    },
+
     addNew() {
       this.addData = {};
       this.visible = true;

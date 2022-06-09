@@ -5,9 +5,11 @@ const BASE_URL = process.env.NODE_ENV === 'production' ? process.env.VUE_APP_API
 module.exports = {
   LOGIN: `${BASE_URL}/login`,
   ROUTES: `${BASE_URL}/routes`,
-  Core_metadata: `${BASE_URL}/core-metadata`,
+
+  Core_metadata: `${BASE_URL}/core-metadata/`,
   TREE: `${BASE_URL}/core-and/findTree`,
   Core_and: `${BASE_URL}/core-and`,
+
   yq_all: `${BASE_URL}/yq-ms/all`,
   yq_update: `${BASE_URL}/yq-ms/update`,
   yq_delete: `${BASE_URL}/yq-ms/delete`,

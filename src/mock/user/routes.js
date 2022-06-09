@@ -9,14 +9,11 @@ Mock.mock(RegExp(`${ROUTES}` + ".*"), 'get', () => {
     children: [
       'demo',
       {
-        router: 'parent1',
+        router: 'directory',
         children: [{
-          router: 'demo',
-          name: 'demo1',
-          authority: {
-            permission: 'demo',
-            role: 'admin'
-          }
+          router: 'resource',
+          name: '数据目录',
+         
         }],
       },
       {

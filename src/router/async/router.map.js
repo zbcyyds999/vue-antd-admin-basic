@@ -7,16 +7,12 @@ const view = {
 
 // 路由组件注册
 const routerMap = {
+
   login: {
     authority: '*',
-    path: '/exchange',
-    component: () => import('@/pages/exchange')
+    path: '/login',
+    component: () => import('@/pages/login')
   },
-  // login: {
-  //   authority: '*',
-  //   path: '/login',
-  //   component: () => import('@/pages/login')
-  // },
   demo: {
     name: '演示页',
     renderMenu: false,
@@ -41,11 +37,11 @@ const routerMap = {
   root: {
     path: '/',
     name: '首页',
-    redirect: '/exchange',
+    redirect: '/login',
     component: view.tabs
   },
-  parent1: {
-    name: '父级路由1',
+  directory: {
+    name: '数据目录',
     icon: 'dashboard',
     component: view.blank
   },
@@ -54,13 +50,17 @@ const routerMap = {
     icon: 'dashboard',
     component: view.blank
   },
+  resource:{
+    name: '数据目',
+    path: 'resource_directory',
+    component: () => import('@/pages/directory')
+  },
   testPage: {
     name: '测试页',
     path: 'testp',
-    component: () => import('@/pages/test/test')
+    component: () => import('@/pages/test')
   },
   Employee: {
-    authority: '*',
     name: '员工健康信息',
     path: 'employee',
     component: () => import('@/pages/employee')
