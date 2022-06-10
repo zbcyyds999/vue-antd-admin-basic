@@ -1,5 +1,6 @@
 import Mock from 'mockjs'
 import '@/mock/extend'
+// import {LOGIN} from '@/services/api'
 
 const user = Mock.mock({
   name: '@ADMIN',
@@ -8,9 +9,9 @@ const user = Mock.mock({
   position: '@POSITION'
 })
 Mock.mock(`${process.env.VUE_APP_API_BASE_URL}/login`, 'post', ({body}) => {
+  // Mock.mock(RegExp(`${LOGIN}` + ".*"), 'post', ({body}) => {
   let result = {data: {}}
   const {name, password} = JSON.parse(body)
-
   let success = false
 
   if (name === 'admin' && password === '888888') {

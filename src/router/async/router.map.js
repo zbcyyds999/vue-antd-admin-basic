@@ -13,9 +13,29 @@ const routerMap = {
     component: () => import('@/pages/login')
   },
   demo: {
-    name: '演示页',
+    name: 'demo',
     renderMenu: false,
     component: () => import('@/pages/demo')
+  },
+  projectmgm: {
+    name: '项目管理',
+    renderMenu: false,
+    component: () => import('@/pages/projectmgm')
+  },
+  reviewmgm: {
+    name: '评审管理',
+    renderMenu: false,
+    component: () => import('@/pages/reviewmgm')
+  },
+  system_settings: {
+    name: '系统设置',
+    renderMenu: false,
+    component: () => import('@/pages/system_settings')
+  },
+  log_viewing: {
+    name: '日志查看',
+    renderMenu: false,
+    component: () => import('@/pages/log_viewing')
   },
   exp403: {
     authority: '*',
