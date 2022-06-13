@@ -1,25 +1,28 @@
 <template>
   <div class="new-page" :style="`min-height: ${pageMinHeight}px`">
-    <h1>系统设置</h1>
+      <iframe
+        id="content"
+        src="http://192.168.1.107:8081/#/login"
+        frameborder="0"
+      ></iframe>
   </div>
 </template>
 
 <script>
-  import {mapState} from 'vuex'
-  export default {
-    name: 'SystemSettings',
+import { mapState } from "vuex";
+export default {
+  name: "SystemSettings",
 
-    data() {
-      return {
-      }
+  data() {
+    return {};
+  },
+  computed: {
+    ...mapState("setting", ["pageMinHeight"]),
+    desc() {
+      return this.$t("description");
     },
-    computed: {
-      ...mapState('setting', ['pageMinHeight']),
-      desc() {
-        return this.$t('description')
-      }
-    }
-  }
+  },
+};
 </script>
 
 <style scoped lang="less">
