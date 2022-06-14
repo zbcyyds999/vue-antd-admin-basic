@@ -19,22 +19,26 @@ const routerMap = {
   },
   projectmgm: {
     name: '项目管理',
+    icon:'cluster',
     renderMenu: false,
     component: () => import('@/pages/projectmgm')
   },
   reviewmgm: {
     name: '评审管理',
+    icon:'reconciliation',
     renderMenu: false,
     component: () => import('@/pages/reviewmgm')
   },
   system_settings: {
     name: '系统设置',
     renderMenu: false,
+    icon:"setting",
     component: () => import('@/pages/system_settings')
   },
   log_viewing: {
     name: '日志查看',
     renderMenu: false,
+    icon: "file-text",
     component: () => import('@/pages/log_viewing')
   },
   exp403: {
@@ -58,16 +62,6 @@ const routerMap = {
     name: '首页',
     redirect: '/login',
     component: view.tabs
-  },
-  parent1: {
-    name: '父级路由1',
-    icon: 'dashboard',
-    component: view.blank
-  },
-  parent2: {
-    name: '父级路由2',
-    icon: 'form',
-    component: view.page
   },
   exception: {
     name: '异常页',

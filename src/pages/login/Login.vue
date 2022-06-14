@@ -2,8 +2,7 @@
   <common-layout>
     <div class="top">
       <div class="header">
-        <img alt="logo" class="logo" src="@/assets/img/logo.png" />
-        <span class="title">{{ systemName }}</span>
+        <span class="title">项目管理</span>
       </div>
       <div class="desc">Ant Design 是西湖区最具影响力的 Web 设计规范</div>
     </div>
@@ -28,7 +27,7 @@
               <a-input
                 autocomplete="autocomplete"
                 size="large"
-                placeholder="admin"
+                placeholder="请输入账户名"
                 v-decorator="[
                   'name',
                   {
@@ -48,7 +47,7 @@
             <a-form-item>
               <a-input
                 size="large"
-                placeholder="888888"
+                placeholder="请输入密码"
                 autocomplete="autocomplete"
                 type="password"
                 v-decorator="[
@@ -107,15 +106,6 @@
             >登录</a-button
           >
         </a-form-item>
-        <div>
-          其他登录方式
-          <a-icon class="icon" type="alipay-circle" />
-          <a-icon class="icon" type="taobao-circle" />
-          <a-icon class="icon" type="weibo-circle" />
-          <router-link style="float: right" to="/dashboard/workplace"
-            >注册账户</router-link
-          >
-        </div>
       </a-form>
     </div>
   </common-layout>
@@ -165,8 +155,7 @@ export default {
       if (loginRes.code == 200) {
         // const { user } = loginRes.data;
         //定义变量name ,把user当做对象处理，并取其属性name ，赋值给变量name //等价于
-        // const name= user.name
-        const user = loginRes.data.user
+        const user = loginRes.data.user;
         const permissions = [{ id: "form", operation: ["add", "edit"] }];
         const name = loginRes.data.userName;
         const roles = [{ id: name, operation: ["add", "edit", "delete"] }];
@@ -181,7 +170,7 @@ export default {
         getRoutesConfig().then((result) => {
           console.log(result);
           const routesConfig = result.data.data;
-          console.log(11,routesConfig);
+          console.log(11, routesConfig);
           loadRoutes(routesConfig);
           this.$router.push("/projectmgm");
           this.$message.success(loginRes.message, 3);
@@ -202,15 +191,10 @@ export default {
   .top {
     text-align: center;
     .header {
-      height: 44px;
-      line-height: 44px;
+      height: 100px;
+      line-height: 100px;
       a {
         text-decoration: none;
-      }
-      .logo {
-        height: 44px;
-        vertical-align: top;
-        margin-right: 16px;
       }
       .title {
         font-size: 33px;
@@ -221,12 +205,12 @@ export default {
         position: relative;
         top: 2px;
       }
-    }
-    .desc {
-      font-size: 14px;
-      color: @text-color-second;
-      margin-top: 12px;
-      margin-bottom: 40px;
+      .desc {
+        font-size: 14px;
+        color: @text-color-second;
+        margin-top: 12px;
+        margin-bottom: 40px;
+      }
     }
   }
   .login {
