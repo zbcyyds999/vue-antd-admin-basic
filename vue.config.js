@@ -37,13 +37,23 @@ const assetsCDN = {
 module.exports = {
   devServer: {
     // proxy: {
-    //   '/api': { //此处要与 /services/api.js 中的 API_PROXY_PREFIX 值保持一致
-    //     target: process.env.VUE_APP_API_BASE_URL,
-    //     changeOrigin: true,
-    //     pathRewrite: {
-    //       '^/api': ''
-    //     }
-    //   }
+    //   // '/api': { //此处要与 /services/api.js 中的 API_PROXY_PREFIX 值保持一致
+    //   //   target: process.env.VUE_APP_API_BASE_URL,
+    //   //   changeOrigin: true, //允许跨域
+    //   //   pathRewrite: {
+    //   //     '^/api': ''
+    //   //   }
+    //   // },
+    //   // '/jflow': { //此处要与 /services/api.js 中的 API_PROXY_PREFIX 值保持一致
+    //   //   target: 'http://192.168.1.105:8089/jflow-web',
+    //   //   changeOrigin: true,
+    //   //   ws: true,
+    //   //   pathRewrite: {
+    //   //     '^/jflow': ''
+    //   //      //这里理解成用'/api'代替target里面的地址,
+    //   //      //比如我要用'https://www.baidu.com/user/add'，直接写'/api/user/add'即可
+    //   //   }
+    //   // }
     // }
   },
   pluginOptions: {

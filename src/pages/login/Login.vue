@@ -2,9 +2,9 @@
   <common-layout>
     <div class="top">
       <div class="header">
-        <span class="title">项目管理</span>
+        <span class="title">{{systemName}}</span>
       </div>
-      <div class="desc">Ant Design 是西湖区最具影响力的 Web 设计规范</div>
+      <div class="desc"></div>
     </div>
     <div class="login">
       <a-form @submit="onSubmit" :form="form">
@@ -151,7 +151,6 @@ export default {
       this.logging = false;
       res.data.message = Mock.mock("@TIMEFIX").CN + "，欢迎回来";
       const loginRes = res.data;
-      console.log(loginRes);
       if (loginRes.code == 200) {
         // const { user } = loginRes.data;
         //定义变量name ,把user当做对象处理，并取其属性name ，赋值给变量name //等价于
@@ -168,9 +167,7 @@ export default {
         });
         // 获取路由配置
         getRoutesConfig().then((result) => {
-          console.log(result);
           const routesConfig = result.data.data;
-          console.log(11, routesConfig);
           loadRoutes(routesConfig);
           this.$router.push("/projectmgm");
           this.$message.success(loginRes.message, 3);
