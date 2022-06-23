@@ -3,62 +3,68 @@
     <a-card>
       <a-form-model layout="inline" :model="form" ref="ruleForm">
         <a-row>
-          <a-form-model-item label="项目名称" prop="PrjName">
+          <a-form-model-item label="项目名称" prop="searchSQL1">
             <a-select
               show-search
               option-filter-prop="children"
               :filter-option="filterOption"
               style="width: 200px"
               allowClear
-              v-model="form.PrjName"
+              v-model="form.searchSQL1"
               placeholder="请选择项目名称"
             >
-              <a-select-option v-for="item in PrjStates" :key="item"
-                >{{ item }}
+              <a-select-option v-for="(item) in PrjNames" :key="item.OID" 
+                >{{ item.PrjName }}
               </a-select-option>
             </a-select>
           </a-form-model-item>
-          <a-form-model-item label="项目状态" prop="PrjState">
+          <a-form-model-item label="项目状态" prop="searchSQL2">
             <a-select
               show-search
               placeholder="请选择项目状态"
               option-filter-prop="children"
               :filter-option="filterOption"
               style="width: 200px"
-              v-model="form.PrjState"
+              v-model="form.searchSQL2"
               allowClear
             >
-              <a-select-option v-for="item in PrjStates" :key="item"
+              <a-select-option
+                v-for="(item, index) in PrjStates"
+                :key="item"
+                :value="index"
                 >{{ item }}
               </a-select-option>
             </a-select>
           </a-form-model-item>
-          <a-form-model-item label="所属年度" prop="Year">
+          <a-form-model-item label="所属年度" prop="searchSQL3">
             <a-select
               show-search
               placeholder="请选择所属年度"
               option-filter-prop="children"
               style="width: 200px"
               :filter-option="filterOption"
-              v-model="form.Year"
+              v-model="form.searchSQL3"
               allowClear
             >
-              <a-select-option v-for="item in PrjStates" :key="item"
+              <a-select-option v-for="item in Years" :key="item"
                 >{{ item }}
               </a-select-option>
             </a-select>
           </a-form-model-item>
-          <a-form-model-item label="项目类型" prop="JSLX">
+          <a-form-model-item label="项目类型" prop="searchSQL4">
             <a-select
               show-search
               placeholder="请选择项目类型"
               style="width: 200px"
               :filter-option="filterOption"
               option-filter-prop="children"
-              v-model="form.JSLX"
+              v-model="form.searchSQL4"
               allowClear
             >
-              <a-select-option v-for="item in JSLXS" :key="item"
+              <a-select-option
+                v-for="(item, index) in JSLXS"
+                :key="item"
+                :value="index"
                 >{{ item }}
               </a-select-option>
             </a-select>
@@ -110,7 +116,7 @@
         </a-table>
         <a-drawer
           :title="title"
-          :width="820"
+          :width="990"
           :visible="visible"
           @close="onClose"
         >
@@ -148,7 +154,7 @@ const columns = [
   },
   {
     title: "上传人",
-    dataIndex: "FlowStarter",
+    dataIndex: "StarterName",
   },
   {
     title: "项目状态",
@@ -165,17 +171,21 @@ const columns = [
 ];
 const data = [];
 const PrjNames = [];
-const Years = [];
+const Years = ["2022", "2021", "2020", "2019", "2018"];
 const JSLXS = [];
-const PrjStates = ["实时", "每日", "每周", "每月", "每季度", "每年"];
+const PrjStates = ["填报中", "待评价", "评价中", "待发布", "发布归档"];
 
-import { getDatas, addDatas, getAllEnums } from "@/services/ProjectMgm";
-import { mapState } from "vuex";
+import {
+  getDatas,
+  addDatas,
+  getAllEnums,
+  getPrjNames,
+} from "@/services/ProjectMgm";
+import { mapState,mapGetters } from "vuex";
 import Cookie from "js-cookie";
+// import Axios from "axios";
 export default {
   name: "ProjectMgm",
-  ...mapState("setting", ["pageMinHeight"]),
-
   data() {
     return {
       PrjNames, //项目名称
@@ -188,13 +198,14 @@ export default {
       columns,
       selectedRowKeys: [], // Check here to configure the default column
       loading: false,
-      url1:'',
-      url: "http://192.168.1.105:8089/jflow-web",
+      oid: this.$route.fullPath.replace(/[^\d]/g, ""),
+      url: "",
+      token: Cookie.get("Authorization"),
       form: {
-        PrjName: undefined,
-        PrjState: undefined,
-        Year: undefined,
-        JSLX: undefined,
+        searchSQL1: undefined,
+        searchSQL2: undefined,
+        searchSQL3: undefined,
+        searchSQL4: undefined,
       },
       paginationOpt: {
         defaultCurrent: 1, // 默认当前页数
@@ -220,14 +231,16 @@ export default {
   },
   computed: {
     ...mapState("setting", ["pageMinHeight"]),
+    ...mapGetters("account", ["user"]),
     hasSelected() {
       return this.selectedRowKeys.length > 0;
     },
   },
+  mounted() {},
   created() {
     this.getData();
     this.getAllEnum();
-    // this.getSqData();
+    this.getPrjName();
     // this.getPeopleInfo();
   },
   watch: {},
@@ -255,36 +268,14 @@ export default {
     },
     // 查询按钮
     submitForm() {
+      this.getData();
       console.log("submit!", this.form);
     },
+    //查询条件重置按钮
     resetForm() {
       this.$refs.ruleForm.resetFields();
     },
-    // 初始化医院下拉框
-    // getSqData() {
-    //   getSqList().then((res) => {
-    //     if (res.data.code == 200) {
-    //       this.JSLXS = res.data.data;
-    //     } else {
-    //       this.$message.error({
-    //         content: res.data.msg,
-    //       });
-    //     }
-    //   });
-    // },
-    // getPeopleInfo(value) {
-    //   const token = this.$route.query.token;
-    //   getOrgList(token, value).then((res) => {
-    //     if (res.data.code == 200) {
-    //       this.peopleInfo = res.data.data;
-    //     } else {
-    //       this.$message.error({
-    //         content: res.data.msg,
-    //       });
-    //     }
-    //   });
-    // },
-    // 初始化表格
+    // 初始化搜索条件
     getAllEnum() {
       getAllEnums().then((res) => {
         const [, , JSLX] = res.data;
@@ -296,8 +287,13 @@ export default {
     },
     getData() {
       const { defaultCurrent, defaultPageSize } = this.paginationOpt;
-      const token = Cookie.get("Authorization");
-      getDatas(token, defaultCurrent, defaultPageSize).then((res) => {
+      getDatas(
+        this.token,
+        this.oid,
+        defaultCurrent,
+        defaultPageSize,
+        this.form
+      ).then((res) => {
         if (res.data.code == 0) {
           this.paginationOpt.total = res.data.count;
           let arr = res.data.data;
@@ -308,25 +304,41 @@ export default {
         }
       });
     },
+    getPrjName() {
+      const name = this.user.userNo
+      getPrjNames(this.oid,name).then((res) => {
+        this.PrjNames = res.data
+        console.log(res);
+
+      });
+    },
     //添加弹窗
     addNew() {
-      this.title = "新增";
+      this.title = "新增项目";
       this.visible = true;
-      const token = Cookie.get("Authorization");
-      addDatas(token).then((res) => {
-
-        this.url = "http://192.168.1.105:8089/jflow-web" + res.data;
-        console.log(this.url);
+      addDatas(this.token, "0", this.oid, "0", "0").then((res) => {
+        console.log(res);
+        const BASE_URL = "jflow-web";
+        // window.open(BASE_URL + res.data)
+        this.url = BASE_URL + res.data;
       });
     },
     // 编辑弹窗
-    onEdit() {
-      this.title = "详情";
+    onEdit(record) {
+      this.title = "项目详情";
       this.visible = true;
+      const { WorkID, FK_Flow, FK_Node, FID } = record;
+      console.log(WorkID);
+      addDatas(this.token, WorkID, FK_Flow, FK_Node, FID).then((res) => {
+        console.log(res);
+        const BASE_URL = "jflow-web";
+        // window.open(BASE_URL + res.data)
+        this.url = BASE_URL + res.data;
+      });
     },
-
     onClose() {
       this.visible = false;
+      this.getData();
     },
   },
 };

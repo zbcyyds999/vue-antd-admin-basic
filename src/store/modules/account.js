@@ -1,12 +1,24 @@
 export default {
   namespaced: true,
   state: {
+    menu: undefined,
     user: undefined,
     permissions: null,
     roles: null,
     routesConfig: null
   },
   getters: {
+    menu: state => {
+      if (!state.menu) {
+        try {
+          const menu = localStorage.getItem(process.env.VUE_APP_MENU_KEY)
+          state.menu = JSON.parse(menu)
+        } catch (e) {
+          console.error(e)
+        }
+      }
+      return state.menu
+    },
     user: state => {
       if (!state.user) {
         try {
@@ -56,6 +68,10 @@ export default {
     }
   },
   mutations: {
+    setMenu (state, menu) {
+      state.menu = menu
+      localStorage.setItem(process.env.VUE_APP_MENU_KEY, JSON.stringify(menu))
+    },
     setUser (state, user) {
       state.user = user
       localStorage.setItem(process.env.VUE_APP_USER_KEY, JSON.stringify(user))

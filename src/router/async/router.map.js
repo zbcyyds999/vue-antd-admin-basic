@@ -17,7 +17,7 @@ const routerMap = {
     renderMenu: false,
     component: () => import('@/pages/demo')
   },
-  projectmgm: {
+  projectmgm021: {
     name: '项目管理',
     icon:'cluster',
     renderMenu: false,

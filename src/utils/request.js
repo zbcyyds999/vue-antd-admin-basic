@@ -67,6 +67,15 @@ function removeAuthorization(authType = AUTH_TYPE.BEARER) {
   switch (authType) {
     case AUTH_TYPE.BEARER:
       Cookie.remove(xsrfHeaderName)
+      Cookie.remove("Auth")
+      Cookie.remove("Tel")
+      Cookie.remove("Token")
+      Cookie.remove("Lang")
+      Cookie.remove("FK_Dept")
+      Cookie.remove("SID")
+      Cookie.remove("IsRememberMe")
+      Cookie.remove("No")
+      Cookie.remove("JSESSIONID")
       break
     case AUTH_TYPE.BASIC:
     case AUTH_TYPE.AUTH1:
