@@ -10,8 +10,8 @@
               :filter-option="filterOption"
               style="width: 200px"
               allowClear
-              v-model="form.searchSQL1"
               placeholder="请选择项目名称"
+              @change="handleChange"
             >
               <a-select-option v-for="(item) in PrjNames" :key="item.OID" 
                 >{{ item.PrjName }}
@@ -246,6 +246,10 @@ export default {
   watch: {},
 
   methods: {
+    handleChange(value) {
+      this.form.searchSQL1 = value
+      // console.log(`selected ${value}`);
+    },
     start() {
       this.loading = true;
       // ajax request after empty completing
