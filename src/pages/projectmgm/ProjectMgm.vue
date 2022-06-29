@@ -11,9 +11,9 @@
               style="width: 200px"
               allowClear
               placeholder="请选择项目名称"
-              @change="handleChange"
+              v-model="form.searchSQL1"
             >
-              <a-select-option v-for="(item) in PrjNames" :key="item.OID" 
+              <a-select-option v-for="(item) in PrjNames" :key="item.PrjName" 
                 >{{ item.PrjName }}
               </a-select-option>
             </a-select>
@@ -79,14 +79,14 @@
       </a-form-model>
       <a-space class="operator">
         <a-button @click="addNew" type="primary">新建</a-button>
-        <a-button
+        <!-- <a-button
           type="primary"
           :disabled="!hasSelected"
           :loading="loading"
           @click="start"
         >
           Reload
-        </a-button>
+        </a-button> -->
         <span style="margin-left: 8px">
           <template v-if="hasSelected">
             {{ `Selected ${selectedRowKeys.length} items` }}
@@ -105,6 +105,7 @@
           :data-source="data"
           :pagination="paginationOpt"
           bordered
+          :scroll="{y: 433 }"
           :row-selection="{
             selectedRowKeys: selectedRowKeys,
             onChange: onSelectChange,
@@ -183,7 +184,6 @@ import {
 } from "@/services/ProjectMgm";
 import { mapState,mapGetters } from "vuex";
 import Cookie from "js-cookie";
-// import Axios from "axios";
 export default {
   name: "ProjectMgm",
   data() {
@@ -241,15 +241,10 @@ export default {
     this.getData();
     this.getAllEnum();
     this.getPrjName();
-    // this.getPeopleInfo();
   },
   watch: {},
 
   methods: {
-    handleChange(value) {
-      this.form.searchSQL1 = value
-      // console.log(`selected ${value}`);
-    },
     start() {
       this.loading = true;
       // ajax request after empty completing
@@ -311,6 +306,7 @@ export default {
     getPrjName() {
       const name = this.user.userNo
       getPrjNames(this.oid,name).then((res) => {
+        
         this.PrjNames = res.data
         console.log(res);
 
