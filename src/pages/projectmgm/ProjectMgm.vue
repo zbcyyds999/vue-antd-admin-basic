@@ -13,7 +13,7 @@
               placeholder="请选择项目名称"
               v-model="form.searchSQL1"
             >
-              <a-select-option v-for="(item) in PrjNames" :key="item.PrjName" 
+              <a-select-option v-for="item in PrjNames" :key="item.PrjName"
                 >{{ item.PrjName }}
               </a-select-option>
             </a-select>
@@ -105,7 +105,7 @@
           :data-source="data"
           :pagination="paginationOpt"
           bordered
-          :scroll="{y: 433 }"
+          :scroll="{ y: 433 }"
           :row-selection="{
             selectedRowKeys: selectedRowKeys,
             onChange: onSelectChange,
@@ -117,7 +117,7 @@
         </a-table>
         <a-drawer
           :title="title"
-          :width="990"
+          :width="1050"
           :visible="visible"
           @close="onClose"
         >
@@ -182,7 +182,7 @@ import {
   getAllEnums,
   getPrjNames,
 } from "@/services/ProjectMgm";
-import { mapState,mapGetters } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import Cookie from "js-cookie";
 export default {
   name: "ProjectMgm",
@@ -304,12 +304,10 @@ export default {
       });
     },
     getPrjName() {
-      const name = this.user.userNo
-      getPrjNames(this.oid,name).then((res) => {
-        
-        this.PrjNames = res.data
+      const name = this.user.userNo;
+      getPrjNames(this.oid, name).then((res) => {
+        this.PrjNames = res.data;
         console.log(res);
-
       });
     },
     //添加弹窗
@@ -322,6 +320,7 @@ export default {
         // window.open(BASE_URL + res.data)
         this.url = BASE_URL + res.data;
       });
+      this.getPrjName();
     },
     // 编辑弹窗
     onEdit(record) {
