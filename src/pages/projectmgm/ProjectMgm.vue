@@ -320,7 +320,7 @@ export default {
         // window.open(BASE_URL + res.data)
         this.url = BASE_URL + res.data;
       });
-      this.getPrjName();
+     
     },
     // 编辑弹窗
     onEdit(record) {
@@ -338,6 +338,7 @@ export default {
     onClose() {
       this.visible = false;
       this.getData();
+       this.getPrjName();
     },
   },
 };
