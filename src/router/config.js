@@ -1,5 +1,5 @@
 import TabsView from '@/layouts/tabs/TabsView'
-import BlankView from '@/layouts/BlankView'
+// import BlankView from '@/layouts/BlankView'
 import PageView from '@/layouts/PageView'
 
 // 路由配置
@@ -27,80 +27,61 @@ const options = {
       redirect: '/login',
       children: [
         {
-          path: 'demo',
+          path: 'dailyFill',
           name: '演示页',
           meta: {
             icon: 'file-ppt'
           },
-          component: () => import('@/pages/demo')
+          component: () => import('@/pages/dailyFill')
         },
         {
-          path: 'parent1',
-          name: '父级路由1',
+          path: 'list',
+          name: '列表页',
           meta: {
-            icon: 'dashboard',
-          },
-          component: BlankView,
-          children: [
-            {
-              path: 'demo1',
-              name: '演示页面1',
-              component: () => import('@/pages/demo'),
-            }
-          ]
-        },
-        {
-          path: 'parent2',
-          name: '父级路由2',
-          meta: {
-            icon: 'form'
+            icon: 'table'
           },
           component: PageView,
           children: [
             {
-              path: 'demo2',
-              name: '演示页面2',
-              component: () => import('@/pages/demo'),
+              path: 'dailyFill',
+              name: '查询表格',
+              meta: {
+                authority: 'queryForm',
+              },
+              // component: () => import('@/pages/list/QueryList'),
+            },
+            {
+              path: 'query/detail/:id',
+              name: '查询详情',
+        
+              // component: () => import('@/pages/Demo')
+            },
+      
+            {
+              path: 'search',
+              name: '搜索列表',
+              // component: () => import('@/pages/list/search/SearchLayout'),
+              children: [
+                {
+                  path: 'article',
+                  name: '文章',
+                  // component: () => import('@/pages/list/search/ArticleList'),
+                },
+                {
+                  path: 'application',
+                  name: '应用',
+                  // component: () => import('@/pages/list/search/ApplicationList'),
+                },
+                {
+                  path: 'project',
+                  name: '项目',
+                  // component: () => import('@/pages/list/search/ProjectList'),
+                }
+              ]
             }
           ]
         },
-        {
-          path: 'exception',
-          name: '异常页',
-          meta: {
-            icon: 'warning',
-          },
-          component: BlankView,
-          children: [
-            {
-              path: '404',
-              name: 'Exp404',
-              component: () => import('@/pages/exception/404')
-            },
-            {
-              path: '403',
-              name: 'Exp403',
-              component: () => import('@/pages/exception/403')
-            },
-            {
-              path: '500',
-              name: 'Exp500',
-              component: () => import('@/pages/exception/500')
-            }
-          ]
-        },
-        {
-          name: '验权页面',
-          path: 'auth/demo',
-          meta: {
-            icon: 'file-ppt',
-            authority: {
-              permission: 'form',
-              role: 'manager'
-            },
-            component: () => import('@/pages/demo')
-          }
-        }
+       
       ]
     }
   ]

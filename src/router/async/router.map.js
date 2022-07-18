@@ -12,34 +12,29 @@ const routerMap = {
     path: '/login',
     component: () => import('@/pages/login')
   },
-  demo: {
-    name: 'demo',
-    renderMenu: false,
-    component: () => import('@/pages/demo')
-  },
-  projectmgm021: {
-    name: '项目管理',
+  dailyFill024: {
+    name: '日报填写',
     icon:'cluster',
     renderMenu: false,
-    component: () => import('@/pages/projectmgm')
+    component: () => import('@/pages/dailyFill')
   },
-  reviewmgm: {
-    name: '评审管理',
+  dailyViiew: {
+    name: '日报查看',
     icon:'reconciliation',
     renderMenu: false,
-    component: () => import('@/pages/reviewmgm')
+    component: () => import('@/pages/dailyViiew')
   },
-  system_settings: {
+  systemSettings: {
     name: '系统设置',
     renderMenu: false,
     icon:"setting",
-    component: () => import('@/pages/system_settings')
+    component: () => import('@/pages/systemSettings')
   },
-  log_viewing: {
-    name: '日志查看',
+  statisticsView: {
+    name: '统计查看',
     renderMenu: false,
     icon: "file-text",
-    component: () => import('@/pages/log_viewing')
+    component: () => import('@/pages/statisticsView')
   },
   exp403: {
     authority: '*',

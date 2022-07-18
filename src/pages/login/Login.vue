@@ -169,7 +169,7 @@ export default {
         getRoutesConfig().then((result) => {
           const routesConfig = result.data.data;
           loadRoutes(routesConfig);
-          this.$router.push("/projectmgm021");
+          this.$router.push("/dailyFill024");
           this.$message.success(loginRes.message, 3);
         });
       } else {

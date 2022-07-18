@@ -6,10 +6,12 @@ module.exports = {
   LOGIN: `${BASE_URL}/user/login`,
   ROUTES: `${BASE_URL}/menu/initMenu`,
   LOGOUT: `${BASE_URL}/user/logout`,
-  getData: `jflow-web/DataUser/DevelopAPI/ProcessRequest`,
+  getData: `jflow-web/api/getDailyWriteInfo`, 
+  getViewData: `jflow-web/api/getDailyCheckInfo`,
+  getDayData: `jflow-web/api/getDailyCheckDetailInfo`,
   addData: `jflow-web/DataUser/DevelopAPI/ProcessRequest`,
+  DbRunningData:`jflow-web/WF/MyViewGener.htm`,
   JflowData: `jflow-web`,
-  // getAllEnum:`${BASE_URL2}/jflow-web/api/getAllEnum`
   getAllEnum: `jflow-web/api/getAllEnum`,
   getPrjName: `jflow-web/api/getAllPrjNameForPeople`
 }
