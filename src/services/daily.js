@@ -29,8 +29,7 @@ export async function getOneEvent(token,WorkID,FK_Flow,FK_Node,FID) {
         WorkID: WorkID,
         FK_Flow: FK_Flow,
         FK_Node:FK_Node,
-        FID: FID
-       
+        FID: FID  
     })
 }
 

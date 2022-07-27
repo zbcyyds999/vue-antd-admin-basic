@@ -12,29 +12,64 @@ const routerMap = {
     path: '/login',
     component: () => import('@/pages/login')
   },
+  daily: {
+    name: '日报填写',
+    icon: 'table',
+    component: view.page
+  },
   dailyFill024: {
     name: '日报填写',
     icon:'cluster',
-    renderMenu: false,
-    component: () => import('@/pages/dailyFill')
+    component: () => import('@/pages/daily/dailyFill')
   },
   dailyViiew: {
     name: '日报查看',
     icon:'reconciliation',
-    renderMenu: false,
-    component: () => import('@/pages/dailyViiew')
+    component: () => import('@/pages/daily/dailyViiew')
   },
   systemSettings: {
     name: '系统设置',
-    renderMenu: false,
     icon:"setting",
-    component: () => import('@/pages/systemSettings')
+    component: () => import('@/pages/exception/403')
   },
   statisticsView: {
     name: '统计查看',
-    renderMenu: false,
     icon: "file-text",
-    component: () => import('@/pages/statisticsView')
+    component: () => import('@/pages/exception/403')
+  },
+  operation: {
+    name: '运维管理',
+    component: view.page
+  },
+  repairOrder: {
+    name: '工单管理',
+    component: view.blank
+  },
+  eventOrder: {
+    name: '事件工单',
+    component: view.blank
+  },
+  resourcesOrder: {
+    name: '资源工单',
+    // component: view.blank
+    component: () => import('@/pages/exception/404')
+  },
+  problemOrder: {
+    name: '问题工单',
+    component: () => import('@/pages/exception/404')
+    // component: view.blank
+  },
+  eventOrderList014: {
+    name: '待办列表—事件',
+    component: () => import('@/pages/operation/eventOrder/EventOrderList')
+  },
+  runningList014: {
+    name: '在途列表—事件',
+    component: () => import('@/pages/operation/eventOrder/RunningList')
+  },
+  completedList014: {
+    name: '完成列表—事件',
+    component: () => import('@/pages/operation/eventOrder/completedList')
   },
   exp403: {
     authority: '*',

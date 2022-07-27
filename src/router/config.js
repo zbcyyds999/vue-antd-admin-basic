@@ -32,7 +32,7 @@ const options = {
           meta: {
             icon: 'file-ppt'
           },
-          component: () => import('@/pages/dailyFill')
+          component: () => import('@/pages/daily/dailyFill')
         },
         {
           path: 'list',

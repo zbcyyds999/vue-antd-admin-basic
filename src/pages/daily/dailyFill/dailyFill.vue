@@ -1,71 +1,83 @@
 <template>
   <div>
     <a-card>
-      <a-form-model layout="inline" :model="form" ref="serchForm">
+      <a-form-model v-bind="formItemLayout" :model="form" ref="serchForm">
         <a-row>
-          <a-form-model-item label="填写人" prop="TianXieRen">
-            <a-input
-              v-model="form.TianXieRen"
-              placeholder="请输入填报人"
-              allowClear
-            />
-          </a-form-model-item>
-          <a-form-model-item label="事件名称" prop="ShiJian">
-            <a-input
-              v-model="form.ShiJian"
-              placeholder="请输入事件名称"
-              allowClear
-            />
-          </a-form-model-item>
-          <a-form-model-item label="事件来源" prop="ShiJianLaiYuan">
-            <a-input
-              v-model="form.ShiJianLaiYuan"
-              placeholder="请输入事件来源"
-              allowClear
-            />
-          </a-form-model-item>
-             <a-form-model-item label="项目类型" prop="searchSQL4">
-            <a-select
-              show-search
-              placeholder="请选择项目类型"
-              style="width: 200px"
-              :filter-option="filterOption"
-              option-filter-prop="children"
-              v-model="form.searchSQL4"
-              allowClear
-            >
-              <a-select-option
-                v-for="(item, index) in JSLXS"
-                :key="item"
-                :value="index"
-                >{{ item }}
-              </a-select-option>
-            </a-select>
-          </a-form-model-item>
-          <a-form-model-item label="事件分类" prop="SJFL">
-            <a-input
-              v-model="form.SJFL"
-              placeholder="请输入事件分类"
-              allowClear
-            />
-          </a-form-model-item>
-          <a-form-model-item>
-            <a-button type="primary" @click="submitForm"> 查询 </a-button>
-          </a-form-model-item>
-          <a-form-model-item>
-            <a-button @click="resetSerchForm"> 重置 </a-button>
-          </a-form-model-item>
+          <a-col :xl="{ span: 5 }" :lg="5" :md="10" :sm="24">
+            <a-form-model-item label="填写人" prop="TianXieRen">
+              <a-input v-model="form.TianXieRen" placeholder="请输入填报人" />
+            </a-form-model-item>
+          </a-col>
+          <a-col
+            :xl="{ span: 5 }"
+            :lg="{ span: 5 }"
+            :md="{ span: 10 }"
+            :sm="24"
+          >
+            <a-form-model-item label="事件名称" prop="ShiJian">
+              <a-input v-model="form.ShiJian" placeholder="请输入事件名称" />
+            </a-form-model-item>
+          </a-col>
+          <a-col
+            :xl="{ span: 5 }"
+            :lg="{ span: 5 }"
+            :md="{ span: 10 }"
+            :sm="24"
+          >
+            <a-form-model-item label="事件来源" prop="ShiJianLaiYuan">
+              <a-input
+                v-model="form.ShiJianLaiYuan"
+                placeholder="请输入事件来源"
+              />
+            </a-form-model-item>
+          </a-col>
+
+          <a-col
+            :xl="{ span: 5 }"
+            :lg="{ span: 5 }"
+            :md="{ span: 10 }"
+            :sm="24"
+          >
+            <a-form-model-item label="事件分类" prop="SJFL">
+              <a-select
+                show-search
+                placeholder="请输入事件分类"
+                :filter-option="filterOption"
+                option-filter-prop="children"
+                v-model="form.SJFL"
+              >
+                <a-select-option
+                  v-for="(item, index) in SJFLs"
+                  :key="item"
+                  :value="index"
+                  >{{ item }}
+                </a-select-option>
+              </a-select>
+            </a-form-model-item>
+          </a-col>
+          <a-col :xl="{ span: 1 }" :lg="{ span: 2 }">
+            <a-form-model-item>
+              <a-button type="primary" @click="submitForm"> 查询 </a-button>
+            </a-form-model-item>
+          </a-col>
+          <a-col :xl="{ span: 1 }" :lg="{ span: 2 }">
+            <a-form-model-item>
+              <a-button @click="resetSerchForm" style="margin-left: 10px">
+                重置
+              </a-button>
+            </a-form-model-item>
+          </a-col>
         </a-row>
       </a-form-model>
-      <a-space class="operator">
-        <a-button @click="addNew" type="primary">新增</a-button>
-      </a-space>
     </a-card>
     <a-card
-      style="margin-top: 24px; min-height: 605px"
+      style="margin-top: 24px"
       :bordered="false"
       :body-style="{ padding: '24px' }"
     >
+      <a-space class="operator">
+        <a-button @click="addNew" type="primary">新增</a-button>
+      </a-space>
       <a-table
         :row-selection="{
           selectedRowKeys: selectedRowKeys,
@@ -73,12 +85,11 @@
         }"
         :columns="columns"
         :data-source="data"
-        :pagination="paginationOpt.title >= 8 ? paginationOpt : false"
+        :loading="loading"
+        :pagination="paginationOpt.total >= 5 ? paginationOpt : false"
       >
         <div slot="action" slot-scope="text, record">
           <a slot="action" @click="onEdit(record)">编辑</a>
-          <!-- <a-divider type="vertical" />
-              <a slot="action" @click="onDel(record.id)">删除</a> -->
         </div>
       </a-table>
       <a-drawer
@@ -127,9 +138,9 @@ const columns = [
     scopedSlots: { customRender: "action" },
   },
 ];
-
+const SJFLs = [];
 const data = [];
-import { getDatas, addDatas } from "@/services/dailyFill";
+import { getDatas, addDatas, getAllEnums } from "@/services/dailyFill";
 import { mapGetters } from "vuex";
 import Cookie from "js-cookie";
 export default {
@@ -142,10 +153,19 @@ export default {
       columns,
       selectedRowKeys: [], // Check here to configure the default column
       loading: false,
-      labelCol: { span: 4 },
-      wrapperCol: { span: 14 },
+      formItemLayout: {
+        labelCol: {
+          xs: { span: 24 },
+          sm: { span: 7 },
+        },
+        wrapperCol: {
+          xs: { span: 24 },
+          sm: { span: 15 },
+        },
+      },
       oid: this.$route.fullPath.replace(/[^\d]/g, ""),
       url: "",
+      SJFLs,
       token: Cookie.get("Authorization"),
       form: {
         TianXieRen: undefined,
@@ -180,12 +200,12 @@ export default {
   },
   created() {
     this.getData();
+    this.getAllEnum();
   },
   watch: {},
 
   methods: {
     getData() {
-      console.log(this.user);
       const { defaultCurrent, defaultPageSize } = this.paginationOpt;
       getDatas(
         this.token,
@@ -195,23 +215,38 @@ export default {
         this.form,
         this.user.userNo
       ).then((res) => {
-        console.log(res);
         if (res.data.code == 0) {
           this.paginationOpt.total = res.data.count;
           let arr = res.data.data;
           arr.forEach((item) => {
             item.key = item.OID;
           });
-          console.log(arr);
           this.data = arr;
+          setTimeout(() => {
+            this.loading = false;
+          }, 500);
         }
       });
     },
+    getAllEnum() {
+      getAllEnums().then((res) => {
+        const [, , , , , , , , , , , , SJFL] = res.data;
+        const { CfgVal } = SJFL;
+        const jslx = CfgVal.split(/[@][0-9][=]/);
+        jslx.splice(0, 1);
+        this.SJFLs = jslx;
+      });
+    },
+    filterOption(input, option) {
+      return (
+        option.componentOptions.children[0].text
+          .toLowerCase()
+          .indexOf(input.toLowerCase()) >= 0
+      );
+    },
     // 查询按钮
     submitForm() {
-      // console.log(this.user.name);
-      console.log(this.form);
-      
+      this.loading = true;
       this.getData();
     },
     start() {
@@ -233,8 +268,7 @@ export default {
       addDatas(this.token, "0", this.oid, "0", "0").then((res) => {
         console.log(res);
         const BASE_URL = "jflow-web";
-        // window.open(BASE_URL + res.data)
-        this.url = BASE_URL + res.data;
+        this.url = BASE_URL + res.data + "&s=" + new Date().getTime();
       });
       this.getData();
     },
@@ -243,32 +277,17 @@ export default {
       this.title = "编辑";
       this.visible = true;
       const { WorkID, FK_Flow, FK_Node, FID } = record;
-      console.log(WorkID);
+      //console.log(WorkID);
       addDatas(this.token, WorkID, FK_Flow, FK_Node, FID).then((res) => {
-        console.log(res);
+        //console.log(res);
         const BASE_URL = "jflow-web";
         // window.open(BASE_URL + res.data)
         this.url = BASE_URL + res.data;
       });
       this.getData();
     },
-
-    onDel() {
-      this.$confirm({
-        title: "提示",
-        content: "确定删除该条信息？",
-        okText: "确认",
-        okType: "danger",
-        cancelText: "取消",
-        onOk() {},
-        onCancel() {
-          console.log("Cancel");
-        },
-      });
-    },
     onClose() {
       this.visible = false;
-      parent.location.reload(); //刷新整个当前页
       this.getData();
     },
     resetSerchForm() {

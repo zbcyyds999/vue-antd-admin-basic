@@ -1,5 +1,5 @@
 import userService from './user'
-import LogViewingService from './LogViewing'
+import operationService from './operation'
 import ProjectMgmService from './ProjectMgm'
 import ReviewMgmService from './ReviewMgm'
 import SystemSettingsService from './SystemSettings'
@@ -7,7 +7,7 @@ import SystemSettingsService from './SystemSettings'
 
 export {
   userService,
-  LogViewingService,
+  operationService,
   ProjectMgmService,
   ReviewMgmService,
   SystemSettingsService

@@ -1,8 +1,8 @@
 import { request, METHOD } from '@/utils/request'
-import {getData,addData} from '@/services/api'
+import { getData, addData, getAllEnum } from '@/services/api'
 
 
-export async function getDatas(token,FK_Flow,page,limit,searchParams,userNo) {
+export async function getDatas(token, FK_Flow, page, limit, searchParams, userNo) {
     return request(getData, METHOD.GET, {
         DoType: "DB_Todolist",
         Token: token,
@@ -16,19 +16,22 @@ export async function getDatas(token,FK_Flow,page,limit,searchParams,userNo) {
 }
 
 
-export async function addDatas(token,WorkID,FK_Flow,FK_Node,FID) {
+export async function addDatas(token, WorkID, FK_Flow, FK_Node, FID) {
     return request(addData, METHOD.GET, {
         DoType: "GenerFrmUrl",
         Token: token,
         t: new Date().getTime(),
         WorkID: WorkID,
         FK_Flow: FK_Flow,
-        FK_Node:FK_Node,
+        FK_Node: FK_Node,
         FID: FID,
     })
 }
-
+export async function getAllEnums() {
+    return request(getAllEnum, METHOD.GET)
+  }
 export default {
     getDatas,
-    addDatas
+    addDatas, 
+    getAllEnums
 }

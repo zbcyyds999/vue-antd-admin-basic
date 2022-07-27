@@ -8,17 +8,14 @@
 <script>
   import {mapState} from 'vuex'
   export default {
-    name: 'settings',
-    i18n: require('./i18n'),
+    name: 'Statistic',
     data() {
       return {
       }
     },
     computed: {
       ...mapState('setting', ['pageMinHeight']),
-      desc() {
-        return this.$t('description')
-      }
+   
     }
   }
 </script>

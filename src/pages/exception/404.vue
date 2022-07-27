@@ -1,5 +1,5 @@
 <template>
-  <exception-page home-route="/demo" :style="`min-height: ${minHeight}`" type="404" />
+  <exception-page home-route="/operation/repairOrder/eventOrder/eventOrderList014" :style="`min-height: ${minHeight}`" type="404" />
 </template>
 
 <script>

@@ -13,5 +13,6 @@ module.exports = {
   DbRunningData:`jflow-web/WF/MyViewGener.htm`,
   JflowData: `jflow-web`,
   getAllEnum: `jflow-web/api/getAllEnum`,
-  getPrjName: `jflow-web/api/getAllPrjNameForPeople`
+  getSJFL: `jflow-web/api/getNameForPeople`,
+  Operation: `jflow-web/DataUser/DevelopAPI/ProcessRequest`,
 }
