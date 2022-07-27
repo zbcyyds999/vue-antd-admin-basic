@@ -14,6 +14,7 @@
           style="padding: 0 2px"
         >
           <a-tab-pane tab="账户密码登录" key="1">
+           
             <a-alert
               type="error"
               :closable="true"
@@ -67,7 +68,7 @@
               </a-input>
             </a-form-item>
           </a-tab-pane>
-          <a-tab-pane tab="手机号登录" key="2">
+          <!-- <a-tab-pane tab="手机号登录" key="2">
             <a-form-item>
               <a-input size="large" placeholder="mobile number">
                 <a-icon slot="prefix" type="mobile" />
@@ -90,12 +91,12 @@
                 </a-col>
               </a-row>
             </a-form-item>
-          </a-tab-pane>
+          </a-tab-pane> -->
         </a-tabs>
-        <div>
+        <!-- <div>
           <a-checkbox :checked="true">自动登录</a-checkbox>
           <a style="float: right">忘记密码</a>
-        </div>
+        </div> -->
         <a-form-item>
           <a-button
             :loading="logging"
