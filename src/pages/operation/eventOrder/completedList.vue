@@ -238,7 +238,11 @@ export default {
           "yyyy-MM-DD"
         );
       }
+
       const { defaultCurrent, defaultPageSize } = this.paginationOpt;
+      setTimeout(() => {
+        this.loading = false;
+      }, 500);
       getCompleteDatas(
         this.token,
         this.oid,
@@ -253,9 +257,7 @@ export default {
           arr.forEach((item) => {
             item.key = item.OID;
           });
-          setTimeout(() => {
-            this.loading = false;
-          }, 500);
+
           this.data = arr;
         }
       });
@@ -286,7 +288,7 @@ export default {
       this.visible = true;
       const { WorkID, FK_Flow, FK_Node, FID } = record;
       const data =
-        "/WF/MyViewGener.htm?HttpHandlerName=BP.WF.HttpHandler.WF_MyView&Track=1&hideAllBtn=1&WorkID=" +
+        "/WF/MyViewGener.htm?HttpHandlerName=BP.WF.HttpHandler.WF_MyView&Track=1&hideCloseBtn=1&WorkID=" +
         WorkID +
         "&FK_Flow=" +
         FK_Flow +

@@ -30,6 +30,23 @@ const resp401 = {
   }
 }
 
+const resp500 = {
+  onFulfilled(response, options) {
+    const {message} = options
+    if (response.code === 500) {
+      message.error('服务器出错了')
+    }
+    return response
+  },
+  onRejected(error, options) {
+    const {message} = options
+    const {response} = error
+    if (response.status === 500) {
+      message.error('服务器出错了')
+    }
+    return Promise.reject(error)
+  }
+}
 const resp403 = {
   onFulfilled(response, options) {
     const {message} = options
@@ -78,5 +95,5 @@ const reqCommon = {
 
 export default {
   request: [reqCommon], // 请求拦截
-  response: [resp401, resp403] // 响应拦截
+  response: [resp401,resp403, resp500] // 响应拦截
 }

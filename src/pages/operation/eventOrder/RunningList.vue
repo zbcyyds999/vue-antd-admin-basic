@@ -218,6 +218,9 @@ export default {
     },
     getData() {
       const { defaultCurrent, defaultPageSize } = this.paginationOpt;
+       setTimeout(() => {
+        this.loading = false;
+      }, 500);
       getRunningDatas(
         this.token,
         this.oid,
@@ -232,9 +235,7 @@ export default {
           arr.forEach((item) => {
             item.key = item.OID;
           });
-          setTimeout(() => {
-            this.loading = false;
-          }, 500);
+
           this.data = arr;
         }
       });

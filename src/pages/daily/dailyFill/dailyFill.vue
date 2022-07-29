@@ -1,9 +1,46 @@
 <template>
   <div>
     <a-card>
-      <a-form-model v-bind="formItemLayout" :model="form" ref="serchForm">
+      <a-form-model layout="inline" :model="form" ref="serchForm">
+        <a-form-model-item label="事件名称" prop="ShiJian">
+          <a-input v-model="form.ShiJian" placeholder="请输入事件名称" />
+        </a-form-model-item>
+
+        <a-form-model-item label="事件来源" prop="ShiJianLaiYuan">
+          <a-input v-model="form.ShiJianLaiYuan" placeholder="请输入事件来源" />
+        </a-form-model-item>
+
+        <a-form-model-item label="事件分类" prop="SJFL">
+          <a-select
+            show-search
+            placeholder="请输入事件分类"
+            :filter-option="filterOption"
+            option-filter-prop="children"
+            style="width:180px"
+            v-model="form.SJFL"
+          >
+            <a-select-option
+              v-for="(item, index) in SJFLs"
+              :key="item"
+              :value="index"
+              >{{ item }}
+            </a-select-option>
+          </a-select>
+        </a-form-model-item>
+
+        <a-form-model-item>
+          <a-button type="primary" @click="submitForm"> 查询 </a-button>
+        </a-form-model-item>
+
+        <a-form-model-item>
+          <a-button @click="resetSerchForm" style="margin-left: 10px">
+            重置
+          </a-button>
+        </a-form-model-item>
+      </a-form-model>
+      <!--   <a-form-model v-bind="formItemLayout" :model="form" ref="serchForm">
         <a-row>
-          <a-col :xl="{ span: 5 }" :lg="5" :md="10" :sm="24">
+           <a-col :xl="{ span: 5 }" :lg="5" :md="10" :sm="24">
             <a-form-model-item label="填写人" prop="TianXieRen">
               <a-input v-model="form.TianXieRen" placeholder="请输入填报人" />
             </a-form-model-item>
@@ -68,7 +105,7 @@
             </a-form-model-item>
           </a-col>
         </a-row>
-      </a-form-model>
+      </a-form-model> -->
     </a-card>
     <a-card
       style="margin-top: 24px"
@@ -83,6 +120,7 @@
           selectedRowKeys: selectedRowKeys,
           onChange: onSelectChange,
         }"
+        bordered
         :columns="columns"
         :data-source="data"
         :loading="loading"
@@ -112,26 +150,35 @@ const columns = [
   {
     title: "序号",
     customRender: (text, record, index) => `${index + 1}`,
+    width: "6%",
   },
   {
     title: "事件分类",
     dataIndex: "SJFL",
+    width: "13%",
   },
   {
     title: "事件来源",
     dataIndex: "ShiJianLaiYuan",
+    width: "13%",
+    ellipsis: true,
   },
   {
     title: "事件名称",
     dataIndex: "ShiJian",
+    width: "13%",
+    ellipsis: true,
   },
   {
     title: "是否完成",
     dataIndex: "SFWC",
+    width: "10%",
   },
   {
     title: "备注",
     dataIndex: "BeiZhu",
+    width: "31%",
+    ellipsis: true,
   },
   {
     title: "操作",
@@ -207,6 +254,9 @@ export default {
   methods: {
     getData() {
       const { defaultCurrent, defaultPageSize } = this.paginationOpt;
+      setTimeout(() => {
+        this.loading = false;
+      }, 500);
       getDatas(
         this.token,
         this.oid,
@@ -222,9 +272,6 @@ export default {
             item.key = item.OID;
           });
           this.data = arr;
-          setTimeout(() => {
-            this.loading = false;
-          }, 500);
         }
       });
     },
@@ -263,7 +310,6 @@ export default {
     },
     //添加弹窗
     addNew() {
-      this.title = "新增";
       this.visible = true;
       addDatas(this.token, "0", this.oid, "0", "0").then((res) => {
         console.log(res);

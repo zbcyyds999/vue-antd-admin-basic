@@ -173,6 +173,7 @@ export default {
       visible: false,
       data,
       columns,
+      intervalId: null, //计时器
       selectedRowKeys: [],
       loading: false,
       labelCol: { span: 4 },
@@ -262,10 +263,32 @@ export default {
   created() {
     this.getData();
     this.getAllEnum();
+    this.dataRefreh();
+  },
+  destroyed() {
+    // 在页面销毁后，清除计时器
+    this.clear();
   },
   watch: {},
 
   methods: {
+    // 定时刷新数据函数
+    dataRefreh() {
+      // 计时器正在进行中，退出函数
+      if (this.intervalId != null) {
+        return;
+      }
+      // 计时器为空，操作
+      this.intervalId = setInterval(() => {
+        this.getData(); //加载数据函数
+      }, 300000);
+    },
+    // 停止定时器
+    clear() {
+      clearInterval(this.intervalId); //清除计时器
+      this.intervalId = null; //设置为null
+    },
+
     onSelectChange(selectedRowKeys) {
       console.log("selectedRowKeys changed: ", selectedRowKeys);
       this.selectedRowKeys = selectedRowKeys;
@@ -278,6 +301,9 @@ export default {
         );
       }
       const { defaultCurrent, defaultPageSize } = this.paginationOpt;
+      setTimeout(() => {
+        this.loading = false;
+      }, 500);
       getDatas(
         this.token,
         this.oid,
@@ -312,9 +338,7 @@ export default {
 
             item.key = item.OID;
           });
-          setTimeout(() => {
-            this.loading = false;
-          }, 500);
+
           this.data = arr;
         }
       });
