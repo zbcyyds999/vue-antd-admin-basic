@@ -1,5 +1,5 @@
 import { request, METHOD } from '@/utils/request'
-import { getData, addData, getAllEnum } from '@/services/api'
+import { getData, Operation, getAllEnum } from '@/services/api'
 
 
 export async function getDatas(token, FK_Flow, page, limit, searchParams, userNo) {
@@ -17,7 +17,7 @@ export async function getDatas(token, FK_Flow, page, limit, searchParams, userNo
 
 
 export async function addDatas(token, WorkID, FK_Flow, FK_Node, FID) {
-    return request(addData, METHOD.GET, {
+    return request(Operation, METHOD.GET, {
         DoType: "GenerFrmUrl",
         Token: token,
         t: new Date().getTime(),

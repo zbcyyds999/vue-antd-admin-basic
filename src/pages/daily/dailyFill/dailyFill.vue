@@ -16,7 +16,7 @@
             placeholder="请输入事件分类"
             :filter-option="filterOption"
             option-filter-prop="children"
-            style="width:180px"
+            style="width: 180px"
             v-model="form.SJFL"
           >
             <a-select-option
@@ -137,6 +137,8 @@
         @close="onClose"
       >
         <iframe
+          id="mobsf"
+          scrolling="no"
           style="height: 850px; width: 100%"
           :src="url"
           frameborder="0"
@@ -187,7 +189,9 @@ const columns = [
 ];
 const SJFLs = [];
 const data = [];
-import { getDatas, addDatas, getAllEnums } from "@/services/dailyFill";
+// import { getCompleteDatas,getPage, getAllEnums } from "@/services/jflow";
+import { getPage, getAllEnums } from "@/services/jflow";
+import { getDatas} from "@/services/dailyFill";
 import { mapGetters } from "vuex";
 import Cookie from "js-cookie";
 export default {
@@ -250,6 +254,7 @@ export default {
     this.getAllEnum();
   },
   watch: {},
+ 
 
   methods: {
     getData() {
@@ -311,8 +316,7 @@ export default {
     //添加弹窗
     addNew() {
       this.visible = true;
-      addDatas(this.token, "0", this.oid, "0", "0").then((res) => {
-        console.log(res);
+      getPage(this.token, "0", this.oid, "0", "0").then((res) => {
         const BASE_URL = "jflow-web";
         this.url = BASE_URL + res.data + "&s=" + new Date().getTime();
       });
@@ -320,11 +324,10 @@ export default {
     },
     // 详情
     onEdit(record) {
-      this.title = "编辑";
       this.visible = true;
       const { WorkID, FK_Flow, FK_Node, FID } = record;
       //console.log(WorkID);
-      addDatas(this.token, WorkID, FK_Flow, FK_Node, FID).then((res) => {
+      getPage(this.token, WorkID, FK_Flow, FK_Node, FID).then((res) => {
         //console.log(res);
         const BASE_URL = "jflow-web";
         // window.open(BASE_URL + res.data)

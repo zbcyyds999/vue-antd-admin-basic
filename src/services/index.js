@@ -2,7 +2,7 @@ import userService from './user'
 import operationService from './operation'
 import ProjectMgmService from './ProjectMgm'
 import ReviewMgmService from './ReviewMgm'
-import SystemSettingsService from './SystemSettings'
+import jflowsService from './jflows'
 
 
 export {
@@ -10,5 +10,5 @@ export {
   operationService,
   ProjectMgmService,
   ReviewMgmService,
-  SystemSettingsService
+  jflowsService
 }

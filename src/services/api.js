@@ -9,10 +9,9 @@ module.exports = {
   getData: `jflow-web/api/getDailyWriteInfo`, 
   getViewData: `jflow-web/api/getDailyCheckInfo`,
   getDayData: `jflow-web/api/getDailyCheckDetailInfo`,
-  addData: `jflow-web/DataUser/DevelopAPI/ProcessRequest`,
-  DbRunningData:`jflow-web/WF/MyViewGener.htm`,
   JflowData: `jflow-web`,
   getAllEnum: `jflow-web/api/getAllEnum`,
   getSJFL: `jflow-web/api/getNameForPeople`,
+  DbRunningData:`jflow-web/WF/MyViewGener.htm`,
   Operation: `jflow-web/DataUser/DevelopAPI/ProcessRequest`,
 }

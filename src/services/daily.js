@@ -1,5 +1,5 @@
 import { request, METHOD } from '@/utils/request'
-import {getViewData,getDayData,addData} from '@/services/api'
+import {getViewData,getDayData,Operation} from '@/services/api'
 
 export async function getViewDatas(token,FK_Flow,page,limit,searchParams,userNo) {
     return request(getViewData, METHOD.GET, {
@@ -22,7 +22,7 @@ export async function getDayDatas(id,status,userNo) {
     })
 }
 export async function getOneEvent(token,WorkID,FK_Flow,FK_Node,FID) {
-    return request(addData, METHOD.GET, {
+    return request(Operation, METHOD.GET, {
         DoType: "GenerFrmUrl",
         Token: token,
         t: new Date().getTime(),

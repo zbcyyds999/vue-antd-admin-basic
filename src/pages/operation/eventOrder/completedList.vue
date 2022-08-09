@@ -123,7 +123,8 @@ const columns = [
 const ZYs = [];
 const data = [];
 
-import { getCompleteDatas, getAllEnums } from "@/services/operation";
+import { getCompleteDatas, getAllEnums } from "@/services/jflow";
+
 import moment from "moment";
 import { mapGetters } from "vuex";
 import Cookie from "js-cookie";
@@ -225,7 +226,6 @@ export default {
     this.getAllEnum();
   },
   watch: {},
-
   methods: {
     onSelectChange(selectedRowKeys) {
       console.log("selectedRowKeys changed: ", selectedRowKeys);
@@ -238,7 +238,6 @@ export default {
           "yyyy-MM-DD"
         );
       }
-
       const { defaultCurrent, defaultPageSize } = this.paginationOpt;
       setTimeout(() => {
         this.loading = false;

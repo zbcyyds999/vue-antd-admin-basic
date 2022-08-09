@@ -1,40 +1,30 @@
 <template>
   <div>
     <a-card>
-      <a-form-model layout="inline" :model="form" ref="serchForm">
+      <!-- <a-form-model layout="inline" :model="form" ref="serchForm">
         <a-row>
-          <a-form-model-item label="建单人" prop="JianDanRen">
+          <a-form-model-item label="单位" prop="JianDanRen">
             <a-input
               v-model="form.JianDanRen"
               style="width: 200px"
-              placeholder="请输入建单人"
+              placeholder="请输入单位"
+            />
+          </a-form-model-item>
+          <a-form-model-item label="单位" prop="JianDanRen">
+            <a-input
+              v-model="form.JianDanRen"
+              style="width: 200px"
+              placeholder="请输入单位"
+            />
+          </a-form-model-item>
+          <a-form-model-item label="单位" prop="JianDanRen">
+            <a-input
+              v-model="form.JianDanRen"
+              style="width: 200px"
+              placeholder="请输入单位"
             />
           </a-form-model-item>
 
-          <a-form-model-item label="摘要" prop="ZY">
-            <a-select
-              show-search
-              placeholder="请选择摘要"
-              style="width: 200px"
-              :filter-option="filterOption"
-              option-filter-prop="children"
-              v-model="form.ZY"
-            >
-              <a-select-option
-                v-for="(item, index) in ZYs"
-                :key="item"
-                :value="index"
-                >{{ item }}
-              </a-select-option>
-            </a-select>
-          </a-form-model-item>
-          <a-form-model-item label="发起时间" prop="JianDanShiJian">
-            <a-date-picker
-              format="YYYY-MM-DD"
-              v-model="form.JianDanShiJian"
-              style="width: 200px"
-            />
-          </a-form-model-item>
           <a-form-model-item>
             <a-button type="primary" @click="submitForm"> 查询 </a-button>
           </a-form-model-item>
@@ -42,7 +32,84 @@
             <a-button @click="resetSerchForm"> 重置 </a-button>
           </a-form-model-item>
         </a-row>
-      </a-form-model>
+      </a-form-model> -->
+      <div :class="advanced ? 'search' : null">
+        <a-form-model :model="form" layout="horizontal" ref="serchForm">
+          <div :class="advanced ? null : 'fold'">
+            <a-row>
+              <a-col :xl="{ span: 7 }" :lg="{ span: 8 }" :md="{ span: 8 }">
+                <a-form-model-item
+                  label="单位"
+                  :labelCol="{ span: 7 }"
+                  :wrapperCol="{ span: 16 }"
+                  prop="DanWei"
+                >
+                  <a-input v-model="form.DanWei" placeholder="请输入单位" />
+                </a-form-model-item>
+              </a-col>
+              <a-col :xl="{ span: 7 }" :md="8" :sm="24">
+                <a-form-model-item
+                  label="CPU"
+                  :labelCol="{ span: 7 }"
+                  :wrapperCol="{ span: 16 }"
+                  prop="CPU"
+                >
+                  <a-input v-model="form.CPU" placeholder="请输入CPU" />
+                </a-form-model-item>
+              </a-col>
+              <a-col :xl="{ span: 7 }" :md="8" :sm="24">
+                <a-form-model-item
+                  label="业务系统"
+                  :labelCol="{ span: 7 }"
+                  :wrapperCol="{ span: 16 }"
+                  prop="YeWuXiTong"
+                >
+                  <a-input
+                    v-model="form.YeWuXiTong"
+                    placeholder="请输入业务系统"
+                  />
+                </a-form-model-item>
+              </a-col>
+            </a-row>
+            <a-row v-if="advanced">
+              <a-col :xl="{ span: 7 }" :md="8" :sm="24">
+                <a-form-model-item
+                  label="操作系统"
+                  :labelCol="{ span: 7 }"
+                  :wrapperCol="{ span: 16 }"
+                  prop="CaoZuoXiTong"
+                >
+                  <a-input
+                    v-model="form.CaoZuoXiTong"
+                    placeholder="请输入操作系统"
+                  />
+                </a-form-model-item>
+              </a-col>
+              <a-col :xl="{ span: 7 }" :md="8" :sm="24">
+                <a-form-model-item
+                  label="GPU"
+                  :labelCol="{ span: 7 }"
+                  :wrapperCol="{ span: 16 }"
+                  prop="GPU"
+                >
+                  <a-input v-model="form.GPU" placeholder="请输入GPU" />
+                </a-form-model-item>
+              </a-col>
+            </a-row>
+          </div>
+          <span style="float: right">
+            <a-button type="primary" @click="submitForm"> 查询 </a-button>
+            <a-button style="margin-left: 18px" @click="resetSerchForm">
+              重置
+            </a-button>
+
+            <a @click="toggleAdvanced" style="margin-left: 8px">
+              {{ advanced ? "收起" : "展开" }}
+              <a-icon :type="advanced ? 'up' : 'down'" />
+            </a>
+          </span>
+        </a-form-model>
+      </div>
     </a-card>
     <a-card
       style="margin-top: 24px;min-height: ${pageMinHeight}px"
@@ -60,40 +127,11 @@
         :loading="loading"
         :pagination="paginationOpt.total >= 5 ? paginationOpt : false"
       >
-        <template slot="sta" slot-scope="text">
-          <span v-if="text === '0'"><a-tag color="red">草稿</a-tag></span>
-          <span v-else-if="text === '1'"><a-tag color="red">撤回</a-tag></span>
-          <span v-else-if="text === '2'"
-            ><a-tag color="green">待办</a-tag></span
-          >
-          <span v-else-if="text === '5'"><a-tag color="red">退回</a-tag></span>
-          <span v-else-if="text === '6'"><a-tag color="red">转发</a-tag></span>
-        </template>
         <div slot="action" slot-scope="text, record">
           <a slot="action" @click="onEdit(record)">编辑</a>
 
-          <a-divider
-            type="vertical"
-            v-if="
-              record.WFState === '5' ||
-              record.TodoEmpsNum === 0 ||
-              (record.TodoEmpsNum !== 0 &&
-                record.FK_Node1 === '01' &&
-                record.StarterName === user.name)
-            "
-          />
-          <a
-            slot="action"
-            @click="onDel(record)"
-            v-if="
-              record.WFState === '5' ||
-              record.TodoEmpsNum === 0 ||
-              (record.TodoEmpsNum !== 0 &&
-                record.FK_Node1 === '01' &&
-                record.StarterName === user.name)
-            "
-            >删除</a
-          >
+          <a-divider type="vertical" />
+          <a slot="action" @click="onDel(record)">删除</a>
         </div>
       </a-table>
       <a-drawer
@@ -118,35 +156,37 @@ const columns = [
     customRender: (text, record, index) => `${index + 1}`,
   },
   {
-    title: "工单号",
-    dataIndex: "BillNo",
+    title: "单位",
+    dataIndex: "DanWei",
   },
   {
-    title: "摘要",
-    dataIndex: "ZY",
+    title: "业务系统",
+    dataIndex: "YeWuXiTong",
   },
   {
-    title: "建单人",
-    dataIndex: "JianDanRen",
-  },
-
-  {
-    title: "建单时间",
-    dataIndex: "JianDanShiJian",
-  },
-  {
-    title: "当前节点",
-    dataIndex: "NodeName",
+    title: "操作系统",
+    dataIndex: "CaoZuoXiTong",
   },
 
   {
-    title: "状态",
-    dataIndex: "sta",
-    scopedSlots: { customRender: "sta" },
+    title: "CPU",
+    dataIndex: "CPU",
   },
   {
-    title: "优先级",
-    dataIndex: "YXJ",
+    title: "内存",
+    dataIndex: "NaCun",
+  },
+  {
+    title: "硬盘",
+    dataIndex: "YingPan",
+  },
+  {
+    title: "GPU",
+    dataIndex: "GPU",
+  },
+  {
+    title: "IP地址",
+    dataIndex: "IPDiZhi",
   },
   {
     title: "操作",
@@ -155,16 +195,22 @@ const columns = [
 ];
 const ZYs = [];
 const data = [];
-import { getTodolistDatas, getAllEnums ,getJflowData,getPage,DelData} from "@/services/jflow";
+import {
+  getTodolistDatas,
+  getAllEnums,
+  getJflowData,
+  getPage,
+  DelData,
+} from "@/services/jflow";
 import { mapGetters, mapState } from "vuex";
 import Cookie from "js-cookie";
-import moment from "moment";
 export default {
-  name: "EventOrderList",
+  name: "ERP",
   data() {
     return {
       title: "",
       visible: false,
+      advanced: false,
       data,
       columns,
       intervalId: null, //计时器
@@ -178,9 +224,11 @@ export default {
       token: Cookie.get("Authorization"),
       formData: {},
       form: {
-        JianDanRen: undefined,
-        ShiJianLaiYuan: undefined,
-        ZY: undefined,
+        DanWei: undefined,
+        YeWuXiTong: undefined,
+        CPU: undefined,
+        GPU: undefined,
+        CaoZuoXiTong: undefined,
       },
       paginationOpt: {
         defaultCurrent: 1, // 默认当前页数
@@ -266,6 +314,9 @@ export default {
   watch: {},
 
   methods: {
+    toggleAdvanced() {
+      this.advanced = !this.advanced;
+    },
     // 定时刷新数据函数
     dataRefreh() {
       // 计时器正在进行中，退出函数
@@ -289,11 +340,6 @@ export default {
     },
     getData() {
       this.formData = { ...this.form };
-      if (this.formData.JianDanShiJian !== undefined) {
-        this.formData.JianDanShiJian = moment(this.form.JianDanShiJian).format(
-          "yyyy-MM-DD"
-        );
-      }
       const { defaultCurrent, defaultPageSize } = this.paginationOpt;
       setTimeout(() => {
         this.loading = false;
@@ -310,29 +356,8 @@ export default {
           this.paginationOpt.total = res.data.count;
           let arr = res.data.data;
           arr.forEach((item) => {
-            let aa = item.FK_Node.toString();
-            item.FK_Node1 = aa.substring(aa.length - 2);
-            if (item.TodoEmpsNum === 0) {
-              item.sta = "0";
-            } else if (
-              item.TodoEmpsNum !== 0 &&
-              item.FK_Node1 === "01" &&
-              item.WFState === "2"
-            ) {
-              item.sta = "1";
-            } else if (item.WFState === "2") {
-              item.sta = "2";
-            } else if (item.WFState === "5") {
-              item.sta = "5";
-            } else if (item.WFState === "6") {
-              item.sta = "6";
-            } else if (item.WFState === "1") {
-              item.sta = "0";
-            }
-
             item.key = item.OID;
           });
-
           this.data = arr;
         }
       });
@@ -362,42 +387,40 @@ export default {
     //添加弹窗
     addNew() {
       this.visible = true;
-
       getJflowData(this.token).then((res) => {
         let arr = res.data;
         let self = this;
         arr.forEach((item) => {
-          if (item.FK_FlowSort == 100 && item.No == this.oid) {
+          if (item.FK_FlowSort == 105 && item.No == this.oid) {
             getPage(this.token, "0", this.oid, "0", "0").then((res) => {
               const BASE_URL = "jflow-web";
-              this.url = BASE_URL + res.data + "&s=" + new Date().getTime();
-            });
-            window.addEventListener("message", function (e) {
-              if (e.data == 'close') {
-                self.onClose();
-              }
+              this.url =
+                BASE_URL +
+                res.data +
+                "&hideCloseBtn=1&hideSendBtn=1&hideTrackBtn=1" +
+                "&s=" +
+                new Date().getTime();
+              window.addEventListener("message", function (e) {
+                if (e.data == "close") {
+                  self.onClose();
+                }
+              });
             });
           }
         });
       });
-
       this.getData();
     },
     // 详情
     onEdit(record) {
-      let self = this;
       this.visible = true;
       const { WorkID, FK_Flow, FK_Node, FID } = record;
       getPage(this.token, WorkID, FK_Flow, FK_Node, FID).then((res) => {
         const BASE_URL = "jflow-web";
-        // window.open(BASE_URL + res.data)
-        this.url = BASE_URL + res.data;
-        window.addEventListener("message", function (e) {
-          if (e.data == 'close') {
-            self.onClose();
-          }
-        });
+        this.url =
+          BASE_URL + res.data + "&hideCloseBtn=1&hideSendBtn=1&hideTrackBtn=1";
       });
+      this.getData();
     },
 
     onDel(record) {
@@ -411,7 +434,6 @@ export default {
         onOk() {
           const { WorkID } = record;
           DelData(self.token, WorkID).then((res) => {
-            console.log(res.data);
             if (res.status == 200) {
               self.$message.success({
                 content: res.data,

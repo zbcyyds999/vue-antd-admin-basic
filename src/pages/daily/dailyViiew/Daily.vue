@@ -205,7 +205,6 @@ export default {
 
     // 表格查看
     LookTable(record) {
-      this.title = "详情";
       this.visible = true;
       const { WorkID, FK_Flow, FK_Node, FID } = record;
       getOneEvent(this.token, WorkID, FK_Flow, FK_Node, FID).then((res) => {
