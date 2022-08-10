@@ -27,19 +27,19 @@ const routerMap = {
     name: '评审管理',
     icon:'reconciliation',
     renderMenu: false,
-    component: () => import('@/pages/reviewmgm')
+    component: () => import('@/pages/exception/404')
   },
   system_settings: {
     name: '系统设置',
     renderMenu: false,
     icon:"setting",
-    component: () => import('@/pages/system_settings')
+    component: () => import('@/pages/exception/404')
   },
   log_viewing: {
     name: '日志查看',
     renderMenu: false,
     icon: "file-text",
-    component: () => import('@/pages/log_viewing')
+    component: () => import('@/pages/exception/404')
   },
   exp403: {
     authority: '*',

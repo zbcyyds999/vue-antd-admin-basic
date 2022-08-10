@@ -77,7 +77,15 @@
           </a-form-model-item>
         </a-row>
       </a-form-model>
-      <a-space class="operator">
+      
+    </a-card>
+    <a-card
+      style="margin-top: 24px"
+      :bordered="false"
+      :body-style="{ padding: '24px' }"
+    >
+      <div>
+        <a-space class="operator">
         <a-button @click="addNew" type="primary">新建</a-button>
         <!-- <a-button
           type="primary"
@@ -87,19 +95,12 @@
         >
           Reload
         </a-button> -->
-        <span style="margin-left: 8px">
+        <!-- <span style="margin-left: 8px">
           <template v-if="hasSelected">
             {{ `Selected ${selectedRowKeys.length} items` }}
           </template>
-        </span>
+        </span> -->
       </a-space>
-    </a-card>
-    <a-card
-      style="margin-top: 24px"
-      :bordered="false"
-      :body-style="{ padding: '24px' }"
-    >
-      <div>
         <a-table
           :columns="columns"
           :data-source="data"
@@ -268,7 +269,6 @@ export default {
     // 查询按钮
     submitForm() {
       this.getData();
-      console.log("submit!", this.form);
     },
     //查询条件重置按钮
     resetForm() {
@@ -307,7 +307,7 @@ export default {
       const name = this.user.userNo;
       getPrjNames(this.oid, name).then((res) => {
         this.PrjNames = res.data;
-        console.log(res);
+        // console.log(res);
       });
     },
     //添加弹窗
@@ -315,7 +315,6 @@ export default {
       this.title = "新增项目";
       this.visible = true;
       addDatas(this.token, "0", this.oid, "0", "0").then((res) => {
-        console.log(res);
         const BASE_URL = "jflow-web";
         // window.open(BASE_URL + res.data)
         this.url = BASE_URL + res.data;
@@ -327,9 +326,7 @@ export default {
       this.title = "项目详情";
       this.visible = true;
       const { WorkID, FK_Flow, FK_Node, FID } = record;
-      console.log(WorkID);
       addDatas(this.token, WorkID, FK_Flow, FK_Node, FID).then((res) => {
-        console.log(res);
         const BASE_URL = "jflow-web";
         // window.open(BASE_URL + res.data)
         this.url = BASE_URL + res.data;
