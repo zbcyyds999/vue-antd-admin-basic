@@ -45,6 +45,22 @@ const routerMap = {
     name: '信息维护',
     component: view.page
   },
+  resourcerqt: {
+    name: '资源申请',
+    component: view.page
+  },
+  TodoList027: {
+    name: '待办资源',
+    component: () => import('@/pages/resourcerqt/eventOrder/EventOrderList')
+  },
+  runningList027: {
+    name: '在途资源',
+    component: () => import('@/pages/resourcerqt/eventOrder/RunningList')
+  },
+  completedList027: {
+    name: '完成资源',
+    component: () => import('@/pages/resourcerqt/eventOrder/completedList')
+  },
   eventMaintain: {
     name: '事件工单人员维护',
     link: 'http://10.163.78.207:8089/jflow-web/WF/CCBill/SearchEditer.htm?FrmID=Dict_SJGDRYWH'
