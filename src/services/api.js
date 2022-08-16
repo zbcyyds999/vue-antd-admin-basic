@@ -19,4 +19,10 @@ module.exports = {
   te_add: `${BASE_URL}/talentExchange/add`,
   sq_list: `${BASE_URL}/Shequinfo/list`,
   org_list: `${BASE_URL}/orgpeopleinfo/list`,
+
+  find_input: `${BASE_URL}/target/findInput`,
+  getInput_data: `${BASE_URL}/target-hospital/getListAll`,
+  edit_target: `${BASE_URL}/target-hospital/editTarget`,
+  
+
 }

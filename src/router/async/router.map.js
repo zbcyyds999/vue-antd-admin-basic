@@ -7,20 +7,15 @@ const view = {
 
 // 路由组件注册
 const routerMap = {
-  login: {
-    authority: '*',
-    path: '/exchange',
-    component: () => import('@/pages/exchange')
-  },
   // login: {
   //   authority: '*',
-  //   path: '/login',
-  //   component: () => import('@/pages/login')
+  //   path: '/exchange',
+  //   component: () => import('@/pages/exchange')
   // },
-  demo: {
-    name: '演示页',
-    renderMenu: false,
-    component: () => import('@/pages/demo')
+  login: {
+    authority: '*',
+    path: '/login',
+    component: () => import('@/pages/login')
   },
   exp403: {
     authority: '*',
@@ -54,13 +49,7 @@ const routerMap = {
     icon: 'dashboard',
     component: view.blank
   },
-  testPage: {
-    name: '测试页',
-    path: 'testp',
-    component: () => import('@/pages/test/test')
-  },
-  Employee: {
-    authority: '*',
+  employee: {
     name: '员工健康信息',
     path: 'employee',
     component: () => import('@/pages/employee')
@@ -68,17 +57,7 @@ const routerMap = {
   exchange: {
     name: '医院信息',
     path: 'exchange',
-    component: () => import('@/pages/exchange')
-  },
-  parent2: {
-    name: '父级路由2',
-    icon: 'form',
-    component: view.page
-  },
-  exception: {
-    name: '异常页',
-    icon: 'warning',
-    component: view.blank
+    component: () => import('@/pages/hospital')
   }
 }
 export default routerMap

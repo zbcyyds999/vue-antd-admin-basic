@@ -1,6 +1,6 @@
 import TabsView from '@/layouts/tabs/TabsView'
 import BlankView from '@/layouts/BlankView'
-import PageView from '@/layouts/PageView'
+// import PageView from '@/layouts/PageView'
 
 // 路由配置
 const options = {
@@ -28,23 +28,7 @@ const options = {
       children: [
         {
           path: 'test',
-          name: 'API测试页',
-          meta: {
-            icon: 'ie'
-          },
-          component: () => import('@/pages/test')
-        },
-        {
-          path: 'demo',
-          name: '演示页',
-          meta: {
-            icon: 'file-ppt'
-          },
-          component: () => import('@/pages/demo')
-        },
-        {
-          path: 'parent1',
-          name: '父级路由1',
+          name: '医院填报',
           meta: {
             icon: 'dashboard',
           },
@@ -54,61 +38,29 @@ const options = {
               path: 'employee',
               name: '员工健康信息',
               component: () => import('@/pages/employee'),
+            },
+            {
+              name: '医院信息',
+              path: 'exchange',
+              component: () => import('@/pages/exchange'),
             }
           ]
         },
         {
           path: 'parent2',
-          name: '父级路由2',
+          name: '医院中心填报',
           meta: {
             icon: 'form'
-          },
-          component: PageView,
-          children: [
-            {
-              path: 'demo2',
-              name: '演示页面2',
-              component: () => import('@/pages/demo'),
-            }
-          ]
-        },
-        {
-          path: 'exception',
-          name: '异常页',
-          meta: {
-            icon: 'warning',
           },
           component: BlankView,
           children: [
             {
-              path: '404',
-              name: 'Exp404',
-              component: () => import('@/pages/exception/404')
-            },
-            {
-              path: '403',
-              name: 'Exp403',
-              component: () => import('@/pages/exception/403')
-            },
-            {
-              path: '500',
-              name: 'Exp500',
-              component: () => import('@/pages/exception/500')
+              path: 'demo2',
+              name: '演示页面2',
+              component: () => import('@/pages/hospital'),
             }
           ]
         },
-        {
-          name: '验权页面',
-          path: 'auth/demo',
-          meta: {
-            icon: 'file-ppt',
-            authority: {
-              permission: 'form',
-              role: 'manager'
-            },
-            component: () => import('@/pages/demo')
-          }
-        }
       ]
     }
   ]
