@@ -362,7 +362,6 @@ export default {
     //添加弹窗
     addNew() {
       this.visible = true;
-
       getJflowData(this.token).then((res) => {
         let arr = res.data;
         let self = this;

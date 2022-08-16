@@ -191,7 +191,7 @@ const SJFLs = [];
 const data = [];
 // import { getCompleteDatas,getPage, getAllEnums } from "@/services/jflow";
 import { getPage, getAllEnums } from "@/services/jflow";
-import { getDatas} from "@/services/dailyFill";
+import { getDatas } from "@/services/dailyFill";
 import { mapGetters } from "vuex";
 import Cookie from "js-cookie";
 export default {
@@ -254,7 +254,6 @@ export default {
     this.getAllEnum();
   },
   watch: {},
- 
 
   methods: {
     getData() {
@@ -319,6 +318,11 @@ export default {
       getPage(this.token, "0", this.oid, "0", "0").then((res) => {
         const BASE_URL = "jflow-web";
         this.url = BASE_URL + res.data + "&s=" + new Date().getTime();
+        window.addEventListener("message", function (e) {
+          if (e.data == "close") {
+            self.onClose();
+          }
+        });
       });
       this.getData();
     },

@@ -235,7 +235,6 @@ export default {
           arr.forEach((item) => {
             item.key = item.OID;
           });
-
           this.data = arr;
         }
       });
