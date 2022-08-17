@@ -234,13 +234,7 @@ export default {
         this.form3.getFieldsValue(),
         formData
       );
-      //value为对象
-  
-      console.log(Object.keys(target).forEach((key) => {
-        if (target[key] == undefined) {
-          target[key] ==''
-        }
-      }));
+   
       uptarget(target).then((res) => {
         if (res.data.code == 200) {
           if (this.save != true) {

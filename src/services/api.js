@@ -23,6 +23,14 @@ module.exports = {
   find_input: `${BASE_URL}/target/findInput`,
   getInput_data: `${BASE_URL}/target-hospital/getListAll`,
   edit_target: `${BASE_URL}/target-hospital/editTarget`,
+  get_list: `${BASE_URL}/target-hospital/getListAll`,//获取医院结果
+
+  file_id: `${BASE_URL}/file/fileId`,//删除图片
+  file_list: `${BASE_URL}/file/fileList`,//获取图片
+  
+  find_tree: `${BASE_URL}/region/findTree`,//获取多级表头
+
+
   
 
 }

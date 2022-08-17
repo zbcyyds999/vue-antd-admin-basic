@@ -30,7 +30,7 @@ const options = {
           path: 'test',
           name: '医院填报',
           meta: {
-            icon: 'dashboard',
+            icon: 'medicine-box',
           },
           component: BlankView,
           children: [
@@ -43,22 +43,54 @@ const options = {
               name: '医院信息',
               path: 'exchange',
               component: () => import('@/pages/exchange'),
-            }
+            },
+            {
+              path: 'performance',
+              name: '绩效填报',
+              component: () => import('@/pages/hospital'),
+            },
+            {
+              path: 'resultList',
+              name: '结果查询',
+              component: () => import('@/pages/hospital_list'),
+            },
+            {
+              path: 'upload',
+              name: '附件上传',
+              component: () =>import('@/pages/hospital_up')
+          },
           ]
         },
         {
           path: 'parent2',
-          name: '医院中心填报',
+          name: '医管中心填报',
           meta: {
-            icon: 'form'
+            icon: 'user'
           },
           component: BlankView,
           children: [
             {
-              path: 'demo2',
-              name: '演示页面2',
-              component: () => import('@/pages/hospital'),
-            }
+              path: 'medical',
+              name: '医管中心填报',
+              // component: () => import('@/pages/hospital_manage')
+          },
+          {
+              path: 'scoring',
+              name: '计分页面',
+              component: () => import('@/pages/scoring_new')
+          
+          },
+          {
+              path: 'manageList',
+              name: '医管中心上传',
+              // component: () => import('@/pages/manage_list')
+          },
+         
+          {
+              path: 'annexAudit',
+              name: '附件审核',
+              // component: () => import('@/pages/manage_audit')
+          },
           ]
         },
       ]
