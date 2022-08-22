@@ -30,13 +30,17 @@ export default {
   background-position-x: center;
   background-position-y: 110px;
   background-size: 100%;
+  position: relative;
   .content{
     padding: 32px 0;
     flex: 1;
-    @media (min-width: 768px){
-
-      padding: 112px 0 24px;
+    @media (min-width: 1200px){
+      padding: 200px 0 24px;
     }
+    @media (min-width: 2000px){
+      padding: 300px 0 24px;
+    }
+     
   }
 }
 </style>

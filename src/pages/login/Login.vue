@@ -4,7 +4,6 @@
       <div class="header">
         <span class="title">{{systemName}}</span>
       </div>
-      <div class="desc"></div>
     </div>
     <div class="login">
       <a-form @submit="onSubmit" :form="form">
@@ -92,10 +91,10 @@
             </a-form-item>
           </a-tab-pane>
         </a-tabs>
-        <div>
+        <!-- <div>
           <a-checkbox :checked="true">自动登录</a-checkbox>
           <a style="float: right">忘记密码</a>
-        </div>
+        </div> -->
         <a-form-item>
           <a-button
             :loading="logging"

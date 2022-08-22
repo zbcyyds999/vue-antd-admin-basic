@@ -1,6 +1,6 @@
 <template>
   <div class="new-page" :style="`min-height: ${pageMinHeight}px`">
-    <a-card>
+    <a-card  :bordered="false">
       <a-form-model layout="inline" :model="form" ref="ruleForm">
         <a-row>
           <a-form-model-item label="项目名称" prop="searchSQL1">
@@ -77,17 +77,14 @@
           </a-form-model-item>
         </a-row>
       </a-form-model>
-      
     </a-card>
     <a-card
-      style="margin-top: 24px"
-      :bordered="false"
-      :body-style="{ padding: '24px' }"
+    style="margin-top: 24px" :bordered="false"
     >
-      <div>
+      <div :style="`min-height: ${Height}px`">
         <a-space class="operator">
-        <a-button @click="addNew" type="primary">新建</a-button>
-        <!-- <a-button
+          <a-button @click="addNew" type="primary">新建</a-button>
+          <!-- <a-button
           type="primary"
           :disabled="!hasSelected"
           :loading="loading"
@@ -95,18 +92,18 @@
         >
           Reload
         </a-button> -->
-        <!-- <span style="margin-left: 8px">
+          <!-- <span style="margin-left: 8px">
           <template v-if="hasSelected">
             {{ `Selected ${selectedRowKeys.length} items` }}
           </template>
         </span> -->
-      </a-space>
+        </a-space>
         <a-table
           :columns="columns"
           :data-source="data"
-          :pagination="paginationOpt"
           bordered
-          :scroll="{ y: 433 }"
+          :loading="loading"
+          :pagination="paginationOpt.total >= 5 ? paginationOpt : false"
           :row-selection="{
             selectedRowKeys: selectedRowKeys,
             onChange: onSelectChange,
@@ -123,7 +120,7 @@
           @close="onClose"
         >
           <iframe
-            style="height: 850px; width: 100%"
+            style="height: 900px; width: 100%"
             :src="url"
             frameborder="0"
           ></iframe>
@@ -143,8 +140,8 @@ const columns = [
     dataIndex: "PrjName",
   },
   {
-    title: "发起时间",
-    dataIndex: "FlowStartRDT",
+    title: "建设时间",
+    dataIndex: "SuoShuNianDu",
   },
   {
     title: "建设类型",
@@ -196,6 +193,7 @@ export default {
       title: "",
       visible: false,
       data,
+      Height:0,
       columns,
       selectedRowKeys: [], // Check here to configure the default column
       loading: false,
@@ -237,7 +235,9 @@ export default {
       return this.selectedRowKeys.length > 0;
     },
   },
-  mounted() {},
+  mounted() {
+    this.Height = this.pageMinHeight-162
+  },
   created() {
     this.getData();
     this.getAllEnum();
@@ -268,6 +268,7 @@ export default {
     },
     // 查询按钮
     submitForm() {
+      this.loading = true;
       this.getData();
     },
     //查询条件重置按钮
@@ -286,6 +287,9 @@ export default {
     },
     getData() {
       const { defaultCurrent, defaultPageSize } = this.paginationOpt;
+      setTimeout(() => {
+        this.loading = false;
+      }, 500);
       getDatas(
         this.token,
         this.oid,
@@ -319,7 +323,6 @@ export default {
         // window.open(BASE_URL + res.data)
         this.url = BASE_URL + res.data;
       });
-     
     },
     // 编辑弹窗
     onEdit(record) {
@@ -335,7 +338,7 @@ export default {
     onClose() {
       this.visible = false;
       this.getData();
-       this.getPrjName();
+      this.getPrjName();
     },
   },
 };
