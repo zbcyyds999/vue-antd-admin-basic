@@ -24,7 +24,8 @@ module.exports = {
   getInput_data: `${BASE_URL}/target-hospital/getListAll`,
   edit_target: `${BASE_URL}/target-hospital/editTarget`,
   get_list: `${BASE_URL}/target-hospital/getListAll`,//获取医院结果
-
+  
+  file_upload: `${BASE_URL}/file/fileUpload`,//上传图片
   file_id: `${BASE_URL}/file/fileId`,//删除图片
   file_list: `${BASE_URL}/file/fileList`,//获取图片
   

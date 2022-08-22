@@ -254,7 +254,7 @@
 
 <script>
 import Select from "../../components/select/Select";
-import { getInput, getData } from "@/services/hospital";
+import { getInput, getData,fileUpload,fileId,fileList } from "@/services/hospital";
 function getBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -308,12 +308,7 @@ export default {
       form.append("employeeNo", "00001");
       form.append("type", fileKey);
       console.log(111, form);
-      this.axios({
-        url: "api/file/fileUpload",
-        method: "post",
-        headers: { "Content-Type": "multipart/file" },
-        data: form,
-      }).then((res) => {
+     fileUpload(form).then((res) => {
         if (res.data.code == 200) {
           // 调用组件内方法, 设置为成功状态
           this.getGameInfo();
@@ -402,13 +397,7 @@ export default {
       return e && e.fileList;
     },
     deleteImg(id) {
-      this.axios({
-        url: "api/file/fileId",
-        method: "delete",
-        params: {
-          id: id,
-        },
-      }).then((res) => {
+     fileId(id).then((res) => {
         if (res.data.code == 200) {
           this.$message.success({
             content: res.data.message,
@@ -417,13 +406,7 @@ export default {
       });
     },
     getGameInfo() {
-      this.axios({
-        url: "api/file/fileList",
-        method: "get",
-        params: {
-          employeeNo: "00001",
-        },
-      }).then((res) => {
+      fileList("00001").then((res) => {
         if (res.data.code == 200) {
           this.fileList = {
             SciFiles: [],
