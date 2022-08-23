@@ -1,6 +1,6 @@
 <template>
   <div class="new-page" :style="`min-height: ${pageMinHeight}px`">
-    <a-card  :bordered="false">
+    <a-card :bordered="false">
       <a-form-model layout="inline" :model="form" ref="ruleForm">
         <a-row>
           <a-form-model-item label="项目名称" prop="searchSQL1">
@@ -78,10 +78,8 @@
         </a-row>
       </a-form-model>
     </a-card>
-    <a-card
-    style="margin-top: 24px" :bordered="false"
-    >
-      <div :style="`min-height: ${Height}px`">
+    <a-card style="margin-top: 24px" :bordered="false">
+      <div>
         <a-space class="operator">
           <a-button @click="addNew" type="primary">新建</a-button>
           <!-- <a-button
@@ -102,6 +100,7 @@
           :columns="columns"
           :data-source="data"
           bordered
+          :locale="locale"
           :loading="loading"
           :pagination="paginationOpt.total >= 5 ? paginationOpt : false"
           :row-selection="{
@@ -120,7 +119,7 @@
           @close="onClose"
         >
           <iframe
-            style="height: 900px; width: 100%"
+            style="height: 860px; width: 100%"
             :src="url"
             frameborder="0"
           ></iframe>
@@ -186,6 +185,7 @@ export default {
   name: "ProjectMgm",
   data() {
     return {
+      locale: { emptyText: <a-empty /> },
       PrjNames, //项目名称
       Years, //所属年度
       PrjStates, //项目状态
@@ -193,7 +193,7 @@ export default {
       title: "",
       visible: false,
       data,
-      Height:0,
+      Height: 0,
       columns,
       selectedRowKeys: [], // Check here to configure the default column
       loading: false,
@@ -234,9 +234,12 @@ export default {
     hasSelected() {
       return this.selectedRowKeys.length > 0;
     },
+    tableHeight: function () {
+      return window.innerHeight + "px";
+    },
   },
   mounted() {
-    this.Height = this.pageMinHeight-162
+    this.Height = this.pageMinHeight - 168;
   },
   created() {
     this.getData();
@@ -321,7 +324,7 @@ export default {
       addDatas(this.token, "0", this.oid, "0", "0").then((res) => {
         const BASE_URL = "jflow-web";
         // window.open(BASE_URL + res.data)
-        this.url = BASE_URL + res.data;
+        this.url = BASE_URL + res.data + new Date().getTime();
       });
     },
     // 编辑弹窗
