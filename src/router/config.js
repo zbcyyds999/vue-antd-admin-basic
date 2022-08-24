@@ -72,7 +72,7 @@ const options = {
             {
               path: 'medical',
               name: '医管中心填报',
-              // component: () => import('@/pages/hospital_manage')
+              component: () => import('@/pages/hospital_manage')
           },
           {
               path: 'scoring',

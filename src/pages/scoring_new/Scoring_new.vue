@@ -7,10 +7,10 @@
       bordered
       size="middle"
       :pagination="false"
-      :scroll="{ x: 'calc(500px + 50%)' }"
+      :scroll="{ x: 'calc(700px + 50%)' }"
     >
       <template
-        v-for="col in ['name', 'age', 'address']"
+        v-for="col in ['Patient_satisfaction_score','Appointment_rate_score']"
         :slot="col"
         slot-scope="text, record"
       >
@@ -195,7 +195,6 @@ export default {
                 delete item.superId;
                 delete item.fixed;
                 delete item.dataIndex;
-
                 data.forEach((item) => {
                   if (item.children.length != "0") {
                     let data = item.children;
@@ -204,7 +203,6 @@ export default {
                     delete item.superId;
                     delete item.fixed;
                     delete item.dataIndex;
-
                     data.forEach((item) => {
                       if (item.children.length != "0") {
                         let data = item.children;
@@ -237,7 +235,7 @@ export default {
             delete item.children;
           }
         });
-        this.columns = res.data;
+        this.columns = [...res.data];
         console.log(this.columns);
       });
     },
