@@ -164,7 +164,7 @@ export default {
         this.setRoles(roles);
         setAuthorization({
           token: loginRes.data.SID,
-          expireAt: new Date(new Date(new Date().getTime() + 30 * 60 * 1000)),
+          expireAt: new Date(new Date(new Date().getTime() + 300 * 60 * 1000)),
         });
         // 获取路由配置
         getRoutesConfig().then((result) => {
