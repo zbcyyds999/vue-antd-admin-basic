@@ -1,5 +1,12 @@
 <template>
   <a-card class="card" title="绩效计分" :bordered="false">
+    <a-button
+      icon="search"
+      type="primary"
+      style="margin-right: 10px"
+      @click="exportData"
+      >导出Excel
+    </a-button>
     <Select slot="extra" @getData="handleChangeYear"></Select>
     <a-table
       :columns="columns"
@@ -8,9 +15,14 @@
       size="middle"
       :pagination="false"
       :scroll="{ x: 'calc(700px + 50%)' }"
+      :rowKey="
+        (record, index) => {
+          return index;
+        }
+      "
     >
       <template
-        v-for="col in ['Patient_satisfaction_score','Appointment_rate_score']"
+        v-for="col in ['Patient_satisfaction_score', 'Appointment_rate_score']"
         :slot="col"
         slot-scope="text, record"
       >
@@ -36,8 +48,12 @@
           </span>
           <span v-else>
             <a :disabled="editingKey !== ''" @click="() => edit(record.key)"
-              >编辑</a
+              >计分</a
             >
+            <a-divider type="vertical" />
+            <a>预览</a>
+            <a-divider type="vertical" />
+            <a>下载</a>
           </span>
         </div>
       </template>
@@ -46,7 +62,8 @@
 </template>
 <script>
 import Select from "../../components/select/Select";
-import { getTree } from "@/services/hospital";
+import { getTree, getScoringList } from "@/services/hospital";
+// import * as ExcelJs from "exceljs";
 
 const columns = [];
 const data = [
@@ -174,11 +191,62 @@ export default {
     };
   },
   methods: {
+    exportData() {
+      /*
+ npm install exceljs
+*/
+      const ExcelJS = require("exceljs");
+      const fs = require("fs");
+      console.log(fs);
+      const excelfile = "./score.xlsx";
+      //       const options = {
+      //   sharedStrings: 'emit',
+      //   hyperlinks: 'emit',
+      //   worksheets: 'emit',
+      // };
+      // const workbookReader = new ExcelJS.stream.xlsx.WorkbookReader(excelfile, options);
+      // workbookReader.read();
+      // workbookReader.on('worksheet', worksheet => {
+      //   worksheet.on('row', row => {
+      //     console.log(row)
+      //   });
+      // });
+      var workbook = new ExcelJS.Workbook();
+      console.log(workbook.xlsx.readFile(excelfile))
+      // console.log(workbook.xlsx.readFile(excelfile)).then((res) => {
+      //   console.log(res);
+      //   var worksheet = workbook.getWorksheet(1); //获取第一个worksheet
+      //   console.log(worksheet);
+        // console.log(worksheet, 11);
+        // worksheet.eachRow(function (row) {
+        //   // var rowSize = row.cellCount;
+        //   // var numValues = row.actualCellCount;
+        //   //console.log("单元格数量/实际数量:"+rowSize+"/"+numValues);
+        //   // cell.type单元格类型：6-公式 ;2-数值；3-字符串
+        //   row.eachCell(function (cell, colNumber) {
+        //     if (cell.type == 6) {
+        //       var value = cell.result;
+        //     }
+        //     // else {
+        //     //   var value = cell.value;
+        //     // }
+        //     console.log("Cell " + colNumber + " = " + cell.type + " " + value);
+        //   });
+        // });
+      // });
+    },
+    getList() {
+      getScoringList(this.year).then((res) => {
+        if (res.data.code == 200) {
+          console.log(res.data.obj);
+          this.data = res.data.obj;
+        }
+      });
+    },
     getTree() {
       getTree().then((res) => {
         // this.columns = res.data
         // let data  = {...res.data};
-        console.log(res.data, 1111);
         res.data.forEach((item) => {
           if (item.children.length != "0") {
             let data = item.children;
@@ -233,15 +301,18 @@ export default {
             });
           } else {
             delete item.children;
+            if (item.id == "239") {
+              item.scopedSlots = { customRender: "operation" };
+            }
           }
         });
         this.columns = [...res.data];
-        console.log(this.columns);
       });
     },
     //调用年份选择下拉框
     handleChangeYear(value) {
       this.year = value;
+      this.getList();
     },
     handleChange(value, key, column) {
       const newData = [...this.data];
@@ -289,6 +360,7 @@ export default {
   },
   created() {
     this.getTree();
+    this.getList();
   },
   mounted() {},
 };

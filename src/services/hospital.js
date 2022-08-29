@@ -1,6 +1,6 @@
 import { request, METHOD } from '@/utils/request'
 import { edit_target, getInput_data, find_input,get_manageList,
-     find_tree, get_list, file_upload, file_id, file_list,edit_man } from '@/services/api'
+     find_tree, get_list, file_upload, file_id, file_list,edit_man,get_scoringList } from '@/services/api'
 
 
 /**
@@ -13,6 +13,11 @@ export async function getData(num, years) {
     return request(getInput_data, METHOD.GET, {
         employeeNo: num,
         years: years,
+    })
+}
+export async function getScoringList( years) {
+    return request(get_scoringList, METHOD.GET, {
+        years: years
     })
 }
 /**

@@ -25,7 +25,9 @@ module.exports = {
   get_manageList: `${BASE_URL}/target-hospital/getManageList`,
   edit_target: `${BASE_URL}/target-hospital/editTarget`,
   edit_man: `${BASE_URL}/target-hospital/editMan`,
-  get_list: `${BASE_URL}/target-hospital/getList`,//获取医院结果
+  get_list: `${BASE_URL}/target-hospital/getHospitalList`,//获取医院结果
+  get_scoringList: `${BASE_URL}/target-hospital/getScoringList`,//获取按年分的医院
+
   
   file_upload: `${BASE_URL}/file/fileUpload`,//上传图片
   file_id: `${BASE_URL}/file/fileId`,//删除图片
