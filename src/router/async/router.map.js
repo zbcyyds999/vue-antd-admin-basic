@@ -79,13 +79,13 @@ const routerMap = {
   },
   resourcesOrder: {
     name: '资源工单',
-    // component: view.blank
-    component: () => import('@/pages/exception/404')
+    component: view.blank
+    // component: () => import('@/pages/exception/404')
   },
   problemOrder: {
     name: '问题工单',
-    component: () => import('@/pages/exception/404')
-    // component: view.blank
+    // component: () => import('@/pages/exception/404')
+    component: view.blank
   },
   eventOrderList014: {
     name: '待办列表—事件',
@@ -97,6 +97,30 @@ const routerMap = {
   },
   completedList014: {
     name: '完成列表—事件',
+    component: () => import('@/pages/operation/eventOrder/completedList')
+  },
+  eventOrderList020: {
+    name: '待办列表—资源',
+    component: () => import('@/pages/operation/eventOrder/EventOrderList')
+  },
+  runningList020: {
+    name: '在途列表—资源',
+    component: () => import('@/pages/operation/eventOrder/RunningList')
+  },
+  completedList020: {
+    name: '完成列表—资源',
+    component: () => import('@/pages/operation/eventOrder/completedList')
+  },
+  eventOrderList029: {
+    name: '待办列表—问题',
+    component: () => import('@/pages/operation/eventOrder/EventOrderList')
+  },
+  runningList029: {
+    name: '在途列表—问题',
+    component: () => import('@/pages/operation/eventOrder/RunningList')
+  },
+  completedList029: {
+    name: '完成列表—问题',
     component: () => import('@/pages/operation/eventOrder/completedList')
   },
   exp403: {
