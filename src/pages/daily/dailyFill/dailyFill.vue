@@ -246,7 +246,9 @@ export default {
       },
     };
   },
+ 
   computed: {
+    
     ...mapGetters("account", ["user"]),
   },
   created() {

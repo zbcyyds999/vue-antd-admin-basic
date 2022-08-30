@@ -99,29 +99,29 @@ const routerMap = {
     name: '完成列表—事件',
     component: () => import('@/pages/operation/eventOrder/completedList')
   },
-  eventOrderList020: {
-    name: '待办列表—资源',
-    component: () => import('@/pages/operation/eventOrder/EventOrderList')
-  },
-  runningList020: {
-    name: '在途列表—资源',
-    component: () => import('@/pages/operation/eventOrder/RunningList')
-  },
-  completedList020: {
-    name: '完成列表—资源',
-    component: () => import('@/pages/operation/eventOrder/completedList')
-  },
   eventOrderList029: {
-    name: '待办列表—问题',
-    component: () => import('@/pages/operation/eventOrder/EventOrderList')
+    name: '待办列表—知识库',
+    component: () => import('@/pages/operation/knowledge/EventOrderList')
   },
   runningList029: {
-    name: '在途列表—问题',
-    component: () => import('@/pages/operation/eventOrder/RunningList')
+    name: '在途列表—知识库',
+    component: () => import('@/pages/operation/knowledge/RunningList')
   },
   completedList029: {
+    name: '完成列表—知识库',
+    component: () => import('@/pages/operation/knowledge/completedList')
+  },
+  eventOrderList020: {
+    name: '待办列表—问题',
+    component: () => import('@/pages/operation/problemOrder/EventOrderList')
+  },
+  runningList020: {
+    name: '在途列表—问题',
+    component: () => import('@/pages/operation/problemOrder/RunningList')
+  },
+  completedList020: {
     name: '完成列表—问题',
-    component: () => import('@/pages/operation/eventOrder/completedList')
+    component: () => import('@/pages/operation/problemOrder/completedList')
   },
   exp403: {
     authority: '*',
