@@ -31,6 +31,7 @@ const resp401 = {
 }
 
 const resp500 = {
+  
   onFulfilled(response, options) {
     const {message} = options
     if (response.code === 500) {
@@ -42,7 +43,8 @@ const resp500 = {
     const {message} = options
     const {response} = error
     if (response.status === 500) {
-      message.error('服务器出错了')
+      message.warning('认证 token 已过期，请重新登录')
+      window.location.hash="/login"
     }
     return Promise.reject(error)
   }

@@ -13,3 +13,24 @@
     width: 80%;
   }
 }
+/deep/.ant-table-fixed-header .ant-table-scroll .ant-table-header {
+  background: #fff !important;
+  box-sizing: border-box !important;
+}
+/deep/.ant-table-body {
+  &::-webkit-scrollbar {
+    height: 8px;
+    width: 0px;
+    overflow-y: auto;
+    background: #939392;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background: #939392;
+  }
+  &::-webkit-scrollbar-track {
+    -webkit-box-shadow: 0;
+    border-radius: 0;
+    background: #f0f2f5;
+  }
+}

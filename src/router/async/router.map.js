@@ -66,8 +66,12 @@ const routerMap = {
     link: 'http://10.163.78.207:8089/jflow-web/WF/CCBill/SearchEditer.htm?FrmID=Dict_SJGDRYWH'
   },
   ERP026: {
-    name: '资源工单',
-    component: () => import('@/pages/resourcemgm')
+    name: '软件资源维护',
+    component: () => import('@/pages/resourcemgm/ERP')
+  },
+  hardwareERP028: {
+    name: '硬件资源维护',
+    component: () => import('@/pages/resourcemgm/hardwareERP')
   },
   repairOrder: {
     name: '工单管理',
