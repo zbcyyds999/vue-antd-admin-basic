@@ -33,9 +33,9 @@ module.exports = {
   file_id: `${BASE_URL}/file/fileId`,//删除图片
   file_list: `${BASE_URL}/file/fileList`,//获取图片
   
+  get_excel: `${BASE_URL}/region/getExcel`,//获取
   find_tree: `${BASE_URL}/region/findTree`,//获取多级表头
-
-
+  download: `${BASE_URL}/file/download`,//获取excel文件流
   
 
 }

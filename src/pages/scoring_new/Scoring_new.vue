@@ -7,7 +7,31 @@
       @click="exportData"
       >导出Excel
     </a-button>
+    <a-upload
+      accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+      :beforeUpload="beforeUpload"
+      @change="handleFileChange"
+    >
+      <a-button type="primary">导入Excel</a-button>
+    </a-upload>
+
     <Select slot="extra" @getData="handleChangeYear"></Select>
+
+    <a-table
+      v-show="false"
+      :id="hideTableId"
+      :columns="Treedata"
+      :data-source="data"
+      bordered
+      size="middle"
+      :pagination="false"
+      :scroll="{ x: 'calc(700px + 50%)' }"
+      :rowKey="
+        (record, index) => {
+          return index;
+        }
+      "
+    ></a-table>
     <a-table
       :columns="columns"
       :data-source="data"
@@ -62,8 +86,9 @@
 </template>
 <script>
 import Select from "../../components/select/Select";
-import { getTree, getScoringList } from "@/services/hospital";
-// import * as ExcelJs from "exceljs";
+import { getTree, getExcel, getScoringList } from "@/services/hospital";
+import { tableToExcel } from "@/utils/excel";
+import * as XLSX from "xlsx";
 
 const columns = [];
 const data = [
@@ -176,7 +201,6 @@ const data = [
     gender: "M",
   },
 ];
-
 export default {
   name: "Scoring_new",
   components: { Select },
@@ -186,67 +210,151 @@ export default {
     return {
       data,
       columns,
+      datas: [],
+      excels: [],
+      hideTableId: "sheet",
+      Treedata: [],
       year: "2020",
       editingKey: "",
     };
   },
   methods: {
+    handleFileChange(info) {
+      if (info.file.status !== "uploading") {
+        console.log(info.file, info.fileList);
+      }
+      if (info.file.status === "done") {
+        this.$message.success(`${info.file.name} file uploaded successfully`);
+      } else if (info.file.status === "error") {
+        this.$message.error(`${info.file.name} file upload failed.`);
+      }
+    },
+    beforeUpload(file) {
+      let _this = this;
+      return new Promise(function (resolve) {
+        // readExcel方法也使用了Promise异步转同步，此处使用then对返回值进行处理
+        _this.readExcel(file).then((result) => {
+          // 此时标识校验成功，为resolve返回
+          if (result) resolve(result);
+        });
+      });
+    },
+    //解析Excel
+    readExcel(file) {
+      let that = this;
+      return new Promise(function (resolve, reject) {
+        // 返回Promise对象
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          // 异步执行
+          try {
+            // 以二进制流方式读取得到整份excel表格对象
+            let data = e.target.result,
+              workbook = XLSX.read(data, { type: "binary" });
+            const SheetName = workbook.SheetNames[0]; // 取第一张表
+            let sheetInfos = workbook.Sheets[SheetName];
+            // const exl = XLSX.utils.sheet_to_json(sheetInfos);
+            let arr = XLSX.utils.sheet_to_json(sheetInfos, {
+              header: 1,
+              defval: "",
+            });
+            console.log(that.excels, 11);
+            let batteryArr = [];
+            // let Arr = [];
+            for (var j = 5; j < arr.length; j++) {
+//               for(var i=0;i<arr[j].length;i++){
+// // Arr.push({})
+//                 // this.excels[i] : arr[j][i]
+//               }
+//               console.log(arr[j]);
+              batteryArr.push(arr[j]);
+            }
+            console.log(that.excels);
+            // that.excels.forEach(item=>{
+            //   item.dataIndex :
+            // })
+           
+            console.log(batteryArr, "导入数组");
+            // if (batteryArr.length > _this.upLoadNumber) {
+            //   app.alert("上传电芯数量不能超过6条");
+            //   resolve(false);
+            // } else {
+            //   resolve(true);
+            // }
+
+            // const ws = XLSX.utils.sheet_to_json(workbook.Sheets[exlname]); // 生成json表格内容
+            // console.log(ws);
+            // ws.forEach((item) => {
+            //   that.datas.push({
+            //     factoryName: item["工厂"],
+            //     wokhouseName: item["车间"],
+            //   });
+            //   console.log(that.datas);
+            // });
+            resolve();
+          } catch (e) {
+            reject(e.message);
+            return false;
+          }
+        };
+        reader.readAsBinaryString(file);
+      });
+    },
+
     exportData() {
-      /*
- npm install exceljs
-*/
-      const ExcelJS = require("exceljs");
-      const fs = require("fs");
-      console.log(fs);
-      const excelfile = "./score.xlsx";
-      //       const options = {
-      //   sharedStrings: 'emit',
-      //   hyperlinks: 'emit',
-      //   worksheets: 'emit',
-      // };
-      // const workbookReader = new ExcelJS.stream.xlsx.WorkbookReader(excelfile, options);
-      // workbookReader.read();
-      // workbookReader.on('worksheet', worksheet => {
-      //   worksheet.on('row', row => {
-      //     console.log(row)
-      //   });
-      // });
-      var workbook = new ExcelJS.Workbook();
-      console.log(workbook.xlsx.readFile(excelfile))
-      // console.log(workbook.xlsx.readFile(excelfile)).then((res) => {
-      //   console.log(res);
-      //   var worksheet = workbook.getWorksheet(1); //获取第一个worksheet
-      //   console.log(worksheet);
-        // console.log(worksheet, 11);
-        // worksheet.eachRow(function (row) {
-        //   // var rowSize = row.cellCount;
-        //   // var numValues = row.actualCellCount;
-        //   //console.log("单元格数量/实际数量:"+rowSize+"/"+numValues);
-        //   // cell.type单元格类型：6-公式 ;2-数值；3-字符串
-        //   row.eachCell(function (cell, colNumber) {
-        //     if (cell.type == 6) {
-        //       var value = cell.result;
-        //     }
-        //     // else {
-        //     //   var value = cell.value;
-        //     // }
-        //     console.log("Cell " + colNumber + " = " + cell.type + " " + value);
-        //   });
-        // });
-      // });
+      var fileName = "绩效计分";
+      const data = this.data;
+      let headLength = 0; //获取表格有几列
+      let colsLength = 0; //获取表格表头的行数，就是最多是几级表头
+      //递归获得表头最大层数
+      function fcHeadLength(header, headerRowLength) {
+        headerRowLength++;
+        header.forEach((item) => {
+          if (item.children && item.children.length > 0) {
+            fcHeadLength(item.children, headerRowLength);
+          } else {
+            if (item.title !== "操作") {
+              headLength++;
+              if (headerRowLength > colsLength) {
+                colsLength = headerRowLength;
+              }
+            }
+            return headLength;
+          }
+        });
+      }
+      fcHeadLength(this.Treedata, 0);
+      tableToExcel(
+        this.hideTableId,
+        `${fileName}${this.$moment(Date.now()).format("YYYYMMDD")}`,
+        headLength, //一共有几列
+        data.length + colsLength, //一共有几行
+        colsLength //表头有几行
+      );
+    },
+    getExcels() {
+      getExcel().then((res) => {
+        if (res.status == "200") {
+          res.data.pop();
+          this.excels = [...res.data];
+        }
+      });
     },
     getList() {
       getScoringList(this.year).then((res) => {
         if (res.data.code == 200) {
-          console.log(res.data.obj);
           this.data = res.data.obj;
         }
       });
     },
     getTree() {
       getTree().then((res) => {
-        // this.columns = res.data
-        // let data  = {...res.data};
+        const data = [...res.data];
+        data.pop(); //删除操作表头
+        data.forEach((item) => {
+          item.fixed = null;
+        });
+        this.Treedata = [...data];
         res.data.forEach((item) => {
           if (item.children.length != "0") {
             let data = item.children;
@@ -279,7 +387,6 @@ export default {
                         delete item.superId;
                         delete item.fixed;
                         delete item.dataIndex;
-
                         data.forEach((item) => {
                           if (item.children.length != "0") {
                             console.log(item);
@@ -360,6 +467,7 @@ export default {
   },
   created() {
     this.getTree();
+    this.getExcels();
     this.getList();
   },
   mounted() {},

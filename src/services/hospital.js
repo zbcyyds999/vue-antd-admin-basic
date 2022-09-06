@@ -1,6 +1,8 @@
 import { request, METHOD } from '@/utils/request'
-import { edit_target, getInput_data, find_input,get_manageList,
-     find_tree, get_list, file_upload, file_id, file_list,edit_man,get_scoringList } from '@/services/api'
+import {
+    edit_target, getInput_data, find_input, get_manageList,get_excel,
+    find_tree, get_list, file_upload, file_id, file_list, edit_man, get_scoringList, download
+} from '@/services/api'
 
 
 /**
@@ -15,7 +17,7 @@ export async function getData(num, years) {
         years: years,
     })
 }
-export async function getScoringList( years) {
+export async function getScoringList(years) {
     return request(get_scoringList, METHOD.GET, {
         years: years
     })
@@ -66,6 +68,12 @@ export async function getTree() {
     return request(find_tree, METHOD.GET
     )
 }
+
+
+export async function getExcel() {
+    return request(get_excel, METHOD.GET
+    )
+}
 /**
  * 获取医院列表
  */
@@ -75,16 +83,24 @@ export async function getHsList(num) {
     })
 }
 
+export async function Download() {
+    return request(download, METHOD.GET, {
+        responseType: 'blob'
 
+    }
+    )
+}
 
 export default {
     getData,
     uptarget,
     getInput,
     getTree,
+    getExcel,
     editMan,
     getHsList,
     fileId,
     fileList,
-    fileUpload
+    fileUpload,
+    Download
 }
