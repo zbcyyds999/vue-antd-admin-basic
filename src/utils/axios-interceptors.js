@@ -43,8 +43,8 @@ const resp500 = {
     const {message} = options
     const {response} = error
     if (response.status === 500) {
-      message.warning('认证 token 已过期，请重新登录')
-      window.location.hash="/login"
+      message.warning('服务器出错了')
+      // window.location.hash="/login"
     }
     return Promise.reject(error)
   }

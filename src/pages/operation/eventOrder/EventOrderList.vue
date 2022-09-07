@@ -126,6 +126,10 @@ const columns = [
     dataIndex: "ZY",
   },
   {
+    title: "房间号",
+    dataIndex: "ShenQingRenFangJianH",
+  },
+  {
     title: "建单人",
     dataIndex: "JianDanRen",
   },
@@ -364,7 +368,6 @@ export default {
       this.visible = true;
       getJflowData(this.token).then((res) => {
         let arr = res.data;
-        let self = this;
         arr.forEach((item) => {
           if (item.FK_FlowSort == 100 && item.No == this.oid) {
             getPage(this.token, "0", this.oid, "0", "0").then((res) => {
@@ -373,18 +376,16 @@ export default {
             });
             window.addEventListener("message", function (e) {
               if (e.data == 'close') {
-                self.onClose();
+                this.onClose();
               }
             });
           }
         });
       });
-
-      this.getData();
+      // this.getData();
     },
     // 详情
     onEdit(record) {
-      let self = this;
       this.visible = true;
       const { WorkID, FK_Flow, FK_Node, FID } = record;
       getPage(this.token, WorkID, FK_Flow, FK_Node, FID).then((res) => {
@@ -393,12 +394,12 @@ export default {
         this.url = BASE_URL + res.data;
         window.addEventListener("message", function (e) {
           if (e.data == 'close') {
-            self.onClose();
+            this.onClose();
           }
         });
       });
+      // this.getData()
     },
-
     onDel(record) {
       let self = this;
       this.$confirm({
@@ -430,7 +431,6 @@ export default {
     },
     onClose() {
       this.visible = false;
-      this.getData();
     },
     resetSerchForm() {
       this.$refs.serchForm.resetFields();
