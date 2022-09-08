@@ -302,8 +302,9 @@ export default {
       setTimeout(() => {
         this.loading = false;
       }, 500);
+      console.log(this.token,'之前');
       getTodolistDatas(
-        this.token,
+        Cookie.get("Authorization"),
         this.oid,
         defaultCurrent,
         defaultPageSize,
@@ -311,6 +312,7 @@ export default {
         this.user.userNo
       ).then((res) => {
         if (res.data.code == 0) {
+          console.log(this.token,"中间");
           this.paginationOpt.total = res.data.count;
           let arr = res.data.data;
           arr.forEach((item) => {
@@ -340,6 +342,9 @@ export default {
           this.data = arr;
         }
       });
+      console.log(this.token,'之后');
+      this.paginationOpt.defaultCurrent= 1; // 默认当前页数
+      this.paginationOpt.defaultPageSize =  10;// 默认当前页显示数据的大小
     },
     getAllEnum() {
       getAllEnums().then((res) => {
@@ -382,11 +387,11 @@ export default {
           }
         });
       });
-      // this.getData();
     },
     // 详情
     onEdit(record) {
       this.visible = true;
+      let that= this
       const { WorkID, FK_Flow, FK_Node, FID } = record;
       getPage(this.token, WorkID, FK_Flow, FK_Node, FID).then((res) => {
         const BASE_URL = "jflow-web";
@@ -394,11 +399,11 @@ export default {
         this.url = BASE_URL + res.data;
         window.addEventListener("message", function (e) {
           if (e.data == 'close') {
-            this.onClose();
+            that.onClose();
+            
           }
         });
       });
-      // this.getData()
     },
     onDel(record) {
       let self = this;
@@ -431,6 +436,8 @@ export default {
     },
     onClose() {
       this.visible = false;
+      this.getData()
+      // this.$refreshPage(this.$route.fullPath)
     },
     resetSerchForm() {
       this.$refs.serchForm.resetFields();

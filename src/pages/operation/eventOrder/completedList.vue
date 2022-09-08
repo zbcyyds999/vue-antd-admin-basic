@@ -260,6 +260,8 @@ export default {
           this.data = arr;
         }
       });
+      this.paginationOpt.defaultCurrent= 1; // 默认当前页数
+      this.paginationOpt.defaultPageSize =  10;// 默认当前页显示数据的大小
     },
     getAllEnum() {
       getAllEnums().then((res) => {
