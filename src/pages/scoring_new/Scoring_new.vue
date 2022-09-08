@@ -86,7 +86,7 @@
 </template>
 <script>
 import Select from "../../components/select/Select";
-import { getTree, getExcel, getScoringList } from "@/services/hospital";
+import { getTree, getExcel, getScoringList,getStrArray } from "@/services/hospital";
 import { tableToExcel } from "@/utils/excel";
 import * as XLSX from "xlsx";
 
@@ -239,6 +239,13 @@ export default {
         });
       });
     },
+    saveExcel(data){
+      getStrArray(data).then((res) => {
+        if (res.status == "200") {
+          console.log(res);
+        }
+      });
+    },
     //解析Excel
     readExcel(file) {
       let that = this;
@@ -261,36 +268,11 @@ export default {
             console.log(that.excels, 11);
             let batteryArr = [];
             // let Arr = [];
-            for (var j = 5; j < arr.length; j++) {
-//               for(var i=0;i<arr[j].length;i++){
-// // Arr.push({})
-//                 // this.excels[i] : arr[j][i]
-//               }
-//               console.log(arr[j]);
+            for (var j = 5; j < arr.length; j++) {            
               batteryArr.push(arr[j]);
             }
-            console.log(that.excels);
-            // that.excels.forEach(item=>{
-            //   item.dataIndex :
-            // })
-           
             console.log(batteryArr, "导入数组");
-            // if (batteryArr.length > _this.upLoadNumber) {
-            //   app.alert("上传电芯数量不能超过6条");
-            //   resolve(false);
-            // } else {
-            //   resolve(true);
-            // }
-
-            // const ws = XLSX.utils.sheet_to_json(workbook.Sheets[exlname]); // 生成json表格内容
-            // console.log(ws);
-            // ws.forEach((item) => {
-            //   that.datas.push({
-            //     factoryName: item["工厂"],
-            //     wokhouseName: item["车间"],
-            //   });
-            //   console.log(that.datas);
-            // });
+                
             resolve();
           } catch (e) {
             reject(e.message);
@@ -388,11 +370,8 @@ export default {
                         delete item.fixed;
                         delete item.dataIndex;
                         data.forEach((item) => {
-                          if (item.children.length != "0") {
-                            console.log(item);
-                          } else {
+                            item.ellipsis = true
                             delete item.children;
-                          }
                         });
                       } else {
                         delete item.children;
@@ -407,6 +386,7 @@ export default {
               }
             });
           } else {
+            item.ellipsis = true,
             delete item.children;
             if (item.id == "239") {
               item.scopedSlots = { customRender: "operation" };
@@ -414,6 +394,7 @@ export default {
           }
         });
         this.columns = [...res.data];
+        console.log(this.columns);
       });
     },
     //调用年份选择下拉框
