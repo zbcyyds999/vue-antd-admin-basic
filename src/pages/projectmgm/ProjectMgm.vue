@@ -171,7 +171,7 @@ const columns = [
     title: "建设类型",
     dataIndex: "JSLX",
     customRender: (text) => {
-      return text != "-1" ? text : "无";
+      return text != "-1" ? text : "国债固定模板";
     },
   },
   {
