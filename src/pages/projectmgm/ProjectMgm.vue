@@ -3,7 +3,7 @@
     <a-card :bordered="false">
       <a-form-model layout="inline" :model="form" ref="ruleForm">
         <a-row>
-          <a-form-model-item label="项目名称" prop="searchSQL1">
+          <a-form-model-item label="项目名称" prop="PrjName">
             <a-select
               show-search
               option-filter-prop="children"
@@ -11,21 +11,21 @@
               style="width: 200px"
               allowClear
               placeholder="请选择项目名称"
-              v-model="form.searchSQL1"
+              v-model="form.PrjName"
             >
               <a-select-option v-for="item in PrjNames" :key="item.PrjName"
                 >{{ item.PrjName }}
               </a-select-option>
             </a-select>
           </a-form-model-item>
-          <a-form-model-item label="项目状态" prop="searchSQL2">
+          <!-- <a-form-model-item label="项目状态" prop="inDate">
             <a-select
               show-search
               placeholder="请选择项目状态"
               option-filter-prop="children"
               :filter-option="filterOption"
               style="width: 200px"
-              v-model="form.searchSQL2"
+              v-model="form.inDate"
               allowClear
             >
               <a-select-option
@@ -35,15 +35,15 @@
                 >{{ item }}
               </a-select-option>
             </a-select>
-          </a-form-model-item>
-          <a-form-model-item label="所属年度" prop="searchSQL3">
+          </a-form-model-item> -->
+          <a-form-model-item label="所属年度" prop="SuoShuNianDu">
             <a-select
               show-search
               placeholder="请选择所属年度"
               option-filter-prop="children"
               style="width: 200px"
               :filter-option="filterOption"
-              v-model="form.searchSQL3"
+              v-model="form.SuoShuNianDu"
               allowClear
             >
               <a-select-option v-for="item in Years" :key="item"
@@ -51,14 +51,32 @@
               </a-select-option>
             </a-select>
           </a-form-model-item>
-          <a-form-model-item label="项目类型" prop="searchSQL4">
+          <a-form-model-item label="项目分类" prop="XMFL">
+            <a-select
+              show-search
+              placeholder="请选择项目分类"
+              style="width: 200px"
+              :filter-option="filterOption"
+              option-filter-prop="children"
+              v-model="form.XMFL"
+              allowClear
+            >
+              <a-select-option
+                v-for="(item, index) in XMFLS"
+                :key="item"
+                :value="index"
+                >{{ item }}
+              </a-select-option>
+            </a-select>
+          </a-form-model-item>
+          <a-form-model-item label="项目类型" prop="JSLX">
             <a-select
               show-search
               placeholder="请选择项目类型"
               style="width: 200px"
               :filter-option="filterOption"
               option-filter-prop="children"
-              v-model="form.searchSQL4"
+              v-model="form.JSLX"
               allowClear
             >
               <a-select-option
@@ -143,8 +161,18 @@ const columns = [
     dataIndex: "SuoShuNianDu",
   },
   {
+    title: "项目分类",
+    dataIndex: "XMFL",
+    customRender: (text) => {
+      return text != "-1" ? text : "无";
+    },
+  },
+  {
     title: "建设类型",
     dataIndex: "JSLX",
+    customRender: (text) => {
+      return text != "-1" ? text : "无";
+    },
   },
   {
     title: "所属单位",
@@ -154,10 +182,10 @@ const columns = [
     title: "上传人",
     dataIndex: "StarterName",
   },
-  {
-    title: "项目状态",
-    dataIndex: "inDate",
-  },
+  // {
+  //   title: "项目状态",
+  //   dataIndex: "inDate",
+  // },
   {
     title: "分数",
     dataIndex: "outReason",
@@ -190,6 +218,8 @@ export default {
       Years, //所属年度
       PrjStates, //项目状态
       JSLXS, //项目类型
+      XMFLS: [],
+      enums: {},
       title: "",
       visible: false,
       data,
@@ -201,10 +231,10 @@ export default {
       url: "",
       token: Cookie.get("Authorization"),
       form: {
-        searchSQL1: undefined,
-        searchSQL2: undefined,
-        searchSQL3: undefined,
-        searchSQL4: undefined,
+        PrjName: undefined,
+        XMFL: undefined,
+        SuoShuNianDu: undefined,
+        JSLX: undefined,
       },
       paginationOpt: {
         defaultCurrent: 1, // 默认当前页数
@@ -281,12 +311,20 @@ export default {
     // 初始化搜索条件
     getAllEnum() {
       getAllEnums().then((res) => {
+        this.enums = res.data[19];
         const [, , JSLX] = res.data;
         const { CfgVal } = JSLX;
         const jslx = CfgVal.split(/[@][0-9][=]/);
         jslx.splice(0, 1);
         this.JSLXS = jslx;
+        this.getxmlxEnum();
       });
+    },
+    getxmlxEnum() {
+      const { CfgVal } = this.enums;
+      const xmfl = CfgVal.split(/[@][0-9][=]/);
+      xmfl.splice(0, 1);
+      this.XMFLS = xmfl;
     },
     getData() {
       const { defaultCurrent, defaultPageSize } = this.paginationOpt;
@@ -324,7 +362,12 @@ export default {
       addDatas(this.token, "0", this.oid, "0", "0").then((res) => {
         const BASE_URL = "jflow-web";
         // window.open(BASE_URL + res.data)
-        this.url = BASE_URL + res.data + new Date().getTime();
+        this.url =
+          BASE_URL +
+          res.data +
+          "&hideCloseBtn=1&hideTrackBtn=1" +
+          "&s=" +
+          new Date().getTime();
       });
     },
     // 编辑弹窗
@@ -335,7 +378,12 @@ export default {
       addDatas(this.token, WorkID, FK_Flow, FK_Node, FID).then((res) => {
         const BASE_URL = "jflow-web";
         // window.open(BASE_URL + res.data)
-        this.url = BASE_URL + res.data;
+        this.url =
+          BASE_URL +
+          res.data +
+          "&hideCloseBtn=1&hideSendBtn=1" +
+          "&s=" +
+          new Date().getTime();
       });
     },
     onClose() {
