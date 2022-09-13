@@ -159,7 +159,13 @@ const columns = [
 ];
 const ZYs = [];
 const data = [];
-import { getTodolistDatas, getAllEnums ,getJflowData,getPage,DelData} from "@/services/jflow";
+import {
+  getTodolistDatas,
+  getAllEnums,
+  getJflowData,
+  getPage,
+  DelData,
+} from "@/services/jflow";
 import { mapGetters, mapState } from "vuex";
 import Cookie from "js-cookie";
 import moment from "moment";
@@ -262,14 +268,21 @@ export default {
     this.getData();
     this.getAllEnum();
     this.dataRefreh();
+    window.getFromIframe = this.getFromIframe; //把vue实例中的方法引用给window对象
   },
   destroyed() {
     // 在页面销毁后，清除计时器
     this.clear();
   },
+  mounted() {},
   watch: {},
 
   methods: {
+    getFromIframe(value) {
+      if (value == "close") {
+        this.onClose();
+      }
+    },
     // 定时刷新数据函数
     dataRefreh() {
       // 计时器正在进行中，退出函数
@@ -292,6 +305,7 @@ export default {
       this.selectedRowKeys = selectedRowKeys;
     },
     getData() {
+    
       this.formData = { ...this.form };
       if (this.formData.JianDanShiJian !== undefined) {
         this.formData.JianDanShiJian = moment(this.form.JianDanShiJian).format(
@@ -302,7 +316,6 @@ export default {
       setTimeout(() => {
         this.loading = false;
       }, 500);
-      console.log(this.token,'之前');
       getTodolistDatas(
         Cookie.get("Authorization"),
         this.oid,
@@ -312,7 +325,7 @@ export default {
         this.user.userNo
       ).then((res) => {
         if (res.data.code == 0) {
-          console.log(this.token,"中间");
+          console.log(this.token, "中间");
           this.paginationOpt.total = res.data.count;
           let arr = res.data.data;
           arr.forEach((item) => {
@@ -338,13 +351,12 @@ export default {
 
             item.key = item.OID;
           });
-
           this.data = arr;
         }
       });
-      console.log(this.token,'之后');
-      this.paginationOpt.defaultCurrent= 1; // 默认当前页数
-      this.paginationOpt.defaultPageSize =  10;// 默认当前页显示数据的大小
+      console.log(this.token, "之后");
+      this.paginationOpt.defaultCurrent = 1; // 默认当前页数
+      this.paginationOpt.defaultPageSize = 10; // 默认当前页显示数据的大小
     },
     getAllEnum() {
       getAllEnums().then((res) => {
@@ -380,7 +392,7 @@ export default {
               this.url = BASE_URL + res.data + "&s=" + new Date().getTime();
             });
             window.addEventListener("message", function (e) {
-              if (e.data == 'close') {
+              if (e.data == "close") {
                 this.onClose();
               }
             });
@@ -391,18 +403,11 @@ export default {
     // 详情
     onEdit(record) {
       this.visible = true;
-      let that= this
       const { WorkID, FK_Flow, FK_Node, FID } = record;
       getPage(this.token, WorkID, FK_Flow, FK_Node, FID).then((res) => {
         const BASE_URL = "jflow-web";
         // window.open(BASE_URL + res.data)
         this.url = BASE_URL + res.data;
-        window.addEventListener("message", function (e) {
-          if (e.data == 'close') {
-            that.onClose();
-            
-          }
-        });
       });
     },
     onDel(record) {
@@ -436,8 +441,7 @@ export default {
     },
     onClose() {
       this.visible = false;
-      this.getData()
-      // this.$refreshPage(this.$route.fullPath)
+      this.getData();
     },
     resetSerchForm() {
       this.$refs.serchForm.resetFields();
