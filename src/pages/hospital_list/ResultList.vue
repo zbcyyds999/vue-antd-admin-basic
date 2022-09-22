@@ -37,6 +37,7 @@
               v-for="item in steps"
               :key="item.title"
               :title="item.title"
+              
             >
               <a-descriptions-item
                 v-for="(itm, index) in item.child"

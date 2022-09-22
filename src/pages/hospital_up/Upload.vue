@@ -12,10 +12,9 @@
           id="components-form-demo-validate-other"
           :form="form"
           v-bind="formItemLayout"
-         
         >
           <a-row>
-            <a-col :span="10" :offset="1">
+            <a-col :span="11">
               <a-form-item
                 label="医学期刊发表论文数SCI"
                 extra="每篇仅上传封皮、目录、摘要三张"
@@ -29,6 +28,7 @@
                   />
                 </a-input-group>
               </a-form-item>
+
               <a-form-item label="上传" v-if="0 < value['periodicalThesisSci']">
                 <a-upload
                   v-decorator="[
@@ -45,6 +45,7 @@
                   :file-list="fileList.SciFiles"
                   class="avatar-uploader"
                   :beforeUpload="beforeUpload"
+                  @change="handleCancel"
                   @preview="handlePreview"
                   :customRequest="(file) => customRequest(file, 'SciFiles')"
                 >
@@ -70,8 +71,16 @@
                   />
                 </a-modal>
               </a-form-item>
+              <div v-for="(item, index) in steps" :key="index">
+                <a-form-item
+                  label="审核意见"
+                  style="color: red; font-size: 24px"
+                  v-if="item.type == 'periodicalThesisSci'"
+                  >{{ item.view }}</a-form-item
+                >
+              </div>
             </a-col>
-            <a-col :span="10">
+            <a-col :span="11">
               <a-form-item
                 label="医学期刊发表论文数核心期刊"
                 extra="每篇仅上传封皮、目录、摘要三张"
@@ -104,6 +113,8 @@
                   :multiple="true"
                   class="avatar-uploader"
                   @preview="handlePreview"
+                  :beforeUpload="beforeUpload"
+                  @change="handleCancel"
                   :customRequest="(file) => customRequest(file, 'CoreFiles')"
                 >
                   <div
@@ -128,10 +139,18 @@
                   />
                 </a-modal>
               </a-form-item>
+              <div v-for="(item, index) in steps" :key="index">
+                <a-form-item
+                  label="审核意见"
+                  style="color: red; font-size: 24px"
+                  v-if="item.type == 'periodicalThesisCore'"
+                  >{{ item.view }}</a-form-item
+                >
+              </div>
             </a-col>
           </a-row>
           <a-row>
-            <a-col :span="10" :offset="1">
+            <a-col :span="11">
               <a-form-item
                 label="医学期刊发表论文数其他正式期刊"
                 extra="每篇仅上传封皮、目录、摘要三张"
@@ -169,6 +188,7 @@
                   :multiple="true"
                   class="avatar-uploader"
                   :beforeUpload="beforeUpload"
+                  @change="handleCancel"
                   @preview="handlePreview"
                   :customRequest="(file) => customRequest(file, 'FormalFiles')"
                 >
@@ -191,11 +211,19 @@
                   <img alt="example" style="width: 100%" :src="previewImage" />
                 </a-modal>
               </a-form-item>
+              <div v-for="(item, index) in steps" :key="index">
+                <a-form-item
+                  label="审核意见"
+                  style="color: red; font-size: 24px"
+                  v-if="item.type == 'periodicalThesisFormal'"
+                  >{{ item.view }}</a-form-item
+                >
+              </div>
             </a-col>
           </a-row>
           <a-row>
             <div v-for="(item, index) in upList" :key="index">
-              <a-col :span="10" :offset="1">
+              <a-col :span="11">
                 <a-form-item :label="item.label">
                   <a-input-group compact>
                     <a-input-number
@@ -221,6 +249,8 @@
                     :file-list="fileList[item.prop + 'Files']"
                     :multiple="true"
                     class="avatar-uploader"
+                    :beforeUpload="beforeUpload"
+                    @change="handleCancel"
                     @preview="handlePreview"
                     :customRequest="
                       (file) => customRequest(file, [item.prop] + 'Files')
@@ -244,6 +274,14 @@
                     />
                   </a-modal>
                 </a-form-item>
+                <div v-for="(itm, index) in steps" :key="index">
+                <a-form-item
+                  label="审核意见"
+                  style="color: red; font-size: 24px"
+                  v-if="itm.type == item.prop"
+                  >{{ itm.view }}</a-form-item
+                >
+              </div>
               </a-col>
             </div>
           </a-row>
@@ -263,12 +301,30 @@
               </a-col>
             </div>
           </a-row>
-          <!-- <a-form-item :wrapper-col="{ span: 12, offset: 6 }">
-          <a-button type="primary" html-type="submit"> 提交 </a-button>
-        </a-form-item> -->
         </a-form>
       </div>
     </a-card>
+    <!-- <a-modal
+      v-model="visible"
+      title="附件审核结果"
+      ok-text="确认"
+      width="50%"
+      :maskClosable="false"
+      cancel-text="取消"
+      @ok="hideModal"
+      v-if="visible"
+    >
+      <a-descriptions :title="审核结果" bordered>
+        <a-descriptions-item
+          v-for="item in steps"
+          :key="item.id"
+          :label="item.typename"
+          :span="2"
+        >
+          {{ item.view }}
+        </a-descriptions-item>
+      </a-descriptions>
+    </a-modal> -->
     <footer-tool-bar>
       <a-button type="primary" @click="handleSubmit"> 提交 </a-button>
     </footer-tool-bar>
@@ -284,6 +340,7 @@ import {
   fileId,
   fileList,
   uptarget,
+  getView,
 } from "@/services/hospital";
 import FooterToolBar from "../../components/tool/FooterToolBar.vue";
 function getBase64(file) {
@@ -302,9 +359,12 @@ export default {
     return {
       year: "2020",
       previewVisible: false,
+      visible: false,
       previewImage: "",
       value: {},
       formData: [],
+      steps: [],
+      employeeNo: "00001",
       fileList: {
         SciFiles: [],
         CoreFiles: [],
@@ -314,7 +374,7 @@ export default {
       upList2: [],
       formItemLayout: {
         labelCol: { span: 11 },
-        wrapperCol: { span: 12 },
+        wrapperCol: { span: 13 },
       },
     };
   },
@@ -322,31 +382,48 @@ export default {
     this.form = this.$form.createForm(this, { name: "validate_other" });
   },
   methods: {
+    hideModal() {
+      this.visible = false;
+    },
+    getViews() {
+      getView(this.employeeNo, this.year).then((res) => {
+        console.log(res.data);
+        if (res.data.length > "0") {
+          this.visible = true;
+          this.steps = res.data;
+        }
+      });
+    },
     //调用年份选择下拉框
     handleChange(value) {
-      console.log(value);
       this.year = value;
-      console.log(this.year);
       //重新请求文本框的值
+      this.value = {};
+      this.steps=[];
+      this.fileList = { SciFiles: [], CoreFiles: [], FormalFiles: [] };
       this.form.resetFields();
       this.getInputValue();
+      this.getGameInfo();
+      this.getViews();
     },
     //上传图片的回调
     customRequest(file, fileKey) {
-      console.log(fileKey);
-
       // 后端需要接受的参数是 formData数据，
       const form = new FormData();
       form.append("file", file.file);
-      form.append("employeeNo", "00001");
+      form.append("employeeNo", this.employeeNo);
       form.append("type", fileKey);
-      console.log(111, form);
+      form.append("years", this.year);
       fileUpload(form).then((res) => {
+        this.getGameInfo();
         if (res.data.code == 200) {
           // 调用组件内方法, 设置为成功状态
-          this.getGameInfo();
+
           file.onSuccess(res, file.file);
           file.status = "done";
+          this.$message.success({
+            content: res.data.message,
+          });
         } else {
           file.onError();
           file.status = "error";
@@ -358,7 +435,6 @@ export default {
       this.value[info] = value;
     },
     getInput() {
-      console.log(this.fileList["Sci" + "Files"]);
       getInput().then((response) => {
         let rest = response.data.obj.filter(function (item) {
           return item.type === "3" && item.disabled === "0";
@@ -372,7 +448,7 @@ export default {
       });
     },
     getInputValue() {
-      getData("00001", this.year).then((response) => {
+      getData(this.employeeNo, this.year).then((response) => {
         console.log(response.data.obj);
         if (response.data.code == 200) {
           let res = response.data.obj[0];
@@ -414,14 +490,7 @@ export default {
     },
     normBatchFiles(e, info) {
       if (e.file.status === "removed") {
-        this.deleteImg(e.file.uid);
-        let deleteUid = e.file.uid;
-        this.fileList[info] = this.fileList[info].filter(function (item) {
-          return item.uid != deleteUid;
-        });
-        if (e.fileList.length == 0) {
-          return {} && [];
-        }
+        this.deleteImg(e, info);
       }
       if (e.file.status === "done") {
         // this.fileList[info] = e;
@@ -429,17 +498,27 @@ export default {
       }
       return e && e.fileList;
     },
-    deleteImg(id) {
-      fileId(id).then((res) => {
+    deleteImg(e, info) {
+      fileId(e.file.uid).then((res) => {
         if (res.data.code == 200) {
+          this.fileList[info] = this.fileList[info].filter(function (item) {
+            return item.uid != e.file.uid;
+          });
+          if (e.fileList.length == 0) {
+            return {} && [];
+          }
           this.$message.success({
+            content: res.data.message,
+          });
+        } else {
+          this.$message.error({
             content: res.data.message,
           });
         }
       });
     },
     getGameInfo() {
-      fileList("00001").then((res) => {
+      fileList(this.employeeNo, this.year).then((res) => {
         if (res.data.code == 200) {
           this.fileList = {
             SciFiles: [],
@@ -448,12 +527,13 @@ export default {
           };
           const photo = res.data.obj.map((item) => {
             let index = item.filepath.lastIndexOf("\\");
+            let url = location.protocol + '//' + location.host+'/img/'
             return {
               uid: item.id,
               status: "done",
               name: item.filename,
               url:
-                "http://localhost:8080/img/" +
+                url +
                 item.filepath.substring(index + 1, item.filepath.length),
               type: item.type,
             };
@@ -470,7 +550,6 @@ export default {
               this.fileList[item.type] = fileRow;
             }
           }
-          console.log(this.fileList);
         }
       });
     },
@@ -496,7 +575,7 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           values.years = this.year;
-          values.employeeNo = "00001";
+          values.employeeNo = this.employeeNo;
           console.log(values);
           uptarget(values).then((response) => {
             if (response.data.code == 200) {
@@ -517,6 +596,7 @@ export default {
   created() {
     // 从后台获取所有图片 并根据图片类型初始化fileList的数组值
     this.getGameInfo();
+    this.getViews();
   },
   mounted() {
     // 从后台获取所有奖项的lable值

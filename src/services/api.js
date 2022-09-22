@@ -27,6 +27,12 @@ module.exports = {
   edit_man: `${BASE_URL}/target-hospital/editMan`,
   get_list: `${BASE_URL}/target-hospital/getHospitalList`,//获取医院结果
   get_scoringList: `${BASE_URL}/target-hospital/getScoringList`,//获取按年分的医院
+  hospital: `${BASE_URL}/target-hospital/Hospital`,//获取医院列表
+  insert_view: `${BASE_URL}/file-view/insertView`,//提交审核意见
+  get_view: `${BASE_URL}/file-view/getView`,//获取审核意见
+
+
+
 
   
   file_upload: `${BASE_URL}/file/fileUpload`,//上传图片

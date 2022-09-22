@@ -51,7 +51,7 @@ import { editMan, getManageList } from "@/services/hospital";
 const columns = [
   {
     title: "医院名称",
-    width: "10%",
+    width: "20%",
     dataIndex: "hospitalName",
     scopedSlots: { customRender: "hospitalName" },
   },
@@ -100,8 +100,9 @@ export default {
   name: "Medical",
   components: { Select },
   data() {
-    this.cacheData = data.map((item) => ({ ...item }));
+    // this.cacheData = data.map((item) => ({ ...item }));
     return {
+      cacheData:[],
       data,
       columns,
       editingKey: '',
@@ -118,16 +119,18 @@ export default {
         if (response.data.code == 200) {
           const  data =  response.data.obj
           data.map((item) => {
-            item.key = item.id.toString();
+            item.key = item.id.toString()
             return item;
           });
           this.data = [...data]
+          this.cacheData = data.map((item) => ({ ...item }));
         } else {
           this.$message.error({
             content: response.data.message,
           });
         }
       });
+      
     },
     editMed(data) {
       editMan(data).then((response) => {
@@ -166,10 +169,10 @@ export default {
       const targetCache = newCacheData.find((item) => key === item.key);
       if (target && targetCache) {
         delete target.editable;
+        this.editMed(target)
         this.data = newData;
         Object.assign(targetCache, target);
         this.cacheData = newCacheData;
-        console.log(this.cacheData);
       }
       this.editingKey = "";
     },

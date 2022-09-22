@@ -152,7 +152,7 @@ export default {
   data() {
     return {
       activeKey: ["1", "2"],
-      year: "2019",
+      year: "2020",
       ruleForm: {
         inputList1: [],
         inputList2: [],

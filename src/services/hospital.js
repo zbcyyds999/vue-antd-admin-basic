@@ -1,10 +1,31 @@
 import { request, METHOD } from '@/utils/request'
 import {
     edit_target, getInput_data, find_input, get_manageList,get_excel,get_strArray,
-    find_tree, get_list, file_upload, file_id, file_list, edit_man, get_scoringList, download
+    find_tree, get_list, file_upload, file_id, file_list, edit_man, get_scoringList, download,hospital,
+    insert_view,get_view
 } from '@/services/api'
 
-
+/**
+ * 
+ * @param {医院账号} num 
+ * @param {年分} years 
+ * @returns 获取审核意见
+ */
+export async function getView(num, years,type) {
+    return request(get_view, METHOD.GET, {
+        employeeNo: num,
+        years: years,
+        type: type,
+    })
+}
+/**
+ * 提交审核意见
+ * @param {*} data 
+ * @returns 
+ */
+export async function insertView(data) {
+    return request(insert_view, METHOD.POST, data)
+}
 /**
  * 获取列表数据
  * @param {医院编码} num 
@@ -15,6 +36,11 @@ export async function getData(num, years) {
     return request(getInput_data, METHOD.GET, {
         employeeNo: num,
         years: years,
+    })
+}
+export async function getHospital(years) {
+    return request(hospital, METHOD.GET, {
+        years: years
     })
 }
 export async function getScoringList(years) {
@@ -54,9 +80,10 @@ export async function fileId(id) {
     }
     )
 }
-export async function fileList(num) {
+export async function fileList(num,years) {
     return request(file_list, METHOD.GET, {
-        employeeNo: num
+        employeeNo: num,
+        years: years
     })
 }
 export async function getInput() {
@@ -94,11 +121,14 @@ export async function Download() {
 }
 
 export default {
+    getView,
+    insertView,
     getData,
     uptarget,
     getInput,
     getTree,
     getExcel,
+    getHospital,
     editMan,
     getHsList,
     fileId,

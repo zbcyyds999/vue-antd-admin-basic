@@ -20,6 +20,7 @@ const options = {
       name: '403',
       component: () => import('@/pages/exception/403'),
     },
+   
     {
       path: '/',
       name: '首页',
@@ -34,25 +35,25 @@ const options = {
           },
           component: BlankView,
           children: [
-            {
-              path: 'employee',
-              name: '员工健康信息',
-              component: () => import('@/pages/employee'),
-            },
-            {
-              name: '医院信息',
-              path: 'exchange',
-              component: () => import('@/pages/exchange'),
-            },
+            // {
+            //   path: 'employee',
+            //   name: '员工健康信息',
+            //   component: () => import('@/pages/employee'),
+            // },
+            // {
+            //   name: '医院信息',
+            //   path: 'exchange',
+            //   component: () => import('@/pages/exchange'),
+            // },
             {
               path: 'performance',
               name: '绩效填报',
-              component: () => import('@/pages/hospital'),
+              component: () => import('@/pages/hospital')
             },
             {
               path: 'resultList',
               name: '结果查询',
-              component: () => import('@/pages/hospital_list'),
+              component: () => import('@/pages/hospital_list')
             },
             {
               path: 'upload',
@@ -62,7 +63,7 @@ const options = {
           ]
         },
         {
-          path: 'parent2',
+          path: 'hsmed',
           name: '医管中心填报',
           meta: {
             icon: 'user'
@@ -70,8 +71,8 @@ const options = {
           component: BlankView,
           children: [
             {
-              path: 'medical',
-              name: '医管中心填报',
+              path: '/medicala',
+              name: '医管填报',
               component: () => import('@/pages/hospital_manage')
           },
           {
@@ -89,7 +90,7 @@ const options = {
           {
               path: 'annexAudit',
               name: '附件审核',
-              // component: () => import('@/pages/manage_audit')
+              component: () => import('@/pages/manage_audit')
           },
           ]
         },

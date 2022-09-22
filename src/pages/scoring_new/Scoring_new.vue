@@ -12,7 +12,7 @@
       :beforeUpload="beforeUpload"
       @change="handleFileChange"
     >
-      <a-button type="primary">导入Excel</a-button>
+      <a-button type="primary"  @click="saveExcel">导入Excel</a-button>
     </a-upload>
 
     <Select slot="extra" @getData="handleChangeYear"></Select>
@@ -86,7 +86,12 @@
 </template>
 <script>
 import Select from "../../components/select/Select";
-import { getTree, getExcel, getScoringList,getStrArray } from "@/services/hospital";
+import {
+  getTree,
+  getExcel,
+  getScoringList,
+  getStrArray,
+} from "@/services/hospital";
 import { tableToExcel } from "@/utils/excel";
 import * as XLSX from "xlsx";
 
@@ -206,7 +211,6 @@ export default {
   components: { Select },
 
   data() {
-    this.cacheData = data.map((item) => ({ ...item }));
     return {
       data,
       columns,
@@ -216,6 +220,7 @@ export default {
       Treedata: [],
       year: "2020",
       editingKey: "",
+      weekdata:{}
     };
   },
   methods: {
@@ -239,8 +244,9 @@ export default {
         });
       });
     },
-    saveExcel(data){
-      getStrArray(data).then((res) => {
+    saveExcel() {
+      console.log(this.weekdata);
+      getStrArray(this.datas).then((res) => {
         if (res.status == "200") {
           console.log(res);
         }
@@ -248,7 +254,6 @@ export default {
     },
     //解析Excel
     readExcel(file) {
-      let that = this;
       return new Promise(function (resolve, reject) {
         // 返回Promise对象
         const reader = new FileReader();
@@ -258,28 +263,46 @@ export default {
             // 以二进制流方式读取得到整份excel表格对象
             let data = e.target.result,
               workbook = XLSX.read(data, { type: "binary" });
-            const SheetName = workbook.SheetNames[0]; // 取第一张表
-            let sheetInfos = workbook.Sheets[SheetName];
-            // const exl = XLSX.utils.sheet_to_json(sheetInfos);
-            let arr = XLSX.utils.sheet_to_json(sheetInfos, {
-              header: 1,
-              defval: "",
-            });
-            console.log(that.excels, 11);
-            let batteryArr = [];
-            // let Arr = [];
-            for (var j = 5; j < arr.length; j++) {            
-              batteryArr.push(arr[j]);
+            for (let i = 0; i < 2; i++) {
+              const SheetName = workbook.SheetNames[i]; // 取第一张表
+              let sheetInfos = workbook.Sheets[SheetName];
+              if (i == 1) {
+                let arr = XLSX.utils.sheet_to_json(sheetInfos);
+                this.weekdata.formula = arr;
+              }
+              if (i == 2) {
+                let arr = XLSX.utils.sheet_to_json(sheetInfos);
+                this.weekdata.values = arr;
+              } else {
+                let arr = XLSX.utils.sheet_to_json(sheetInfos, {
+                  header: 1,
+                  defval: "",
+                });
+                let batteryArr = [];
+                for (var j = 5; j < arr.length; j++) {
+                  batteryArr.push(arr[j]);
+                }
+                this.weekdata.original = batteryArr;
+              }
             }
-            console.log(batteryArr, "导入数组");
-                
+                     // arr.map(() => {
+            //          let obj = {}
+            //          //对获取的Excel数据进行操作
+            //          arr.push(obj)
+            //     })
+            //     console.log(arr);
+
+            // let ids = {};
+            // ids.data1 = batteryArr;
             resolve();
+            // this.saveExcel(this.weekdata)
           } catch (e) {
             reject(e.message);
             return false;
           }
         };
         reader.readAsBinaryString(file);
+        
       });
     },
 
@@ -326,6 +349,8 @@ export default {
       getScoringList(this.year).then((res) => {
         if (res.data.code == 200) {
           this.data = res.data.obj;
+          this.cacheData = this.data.map((item) => ({ ...item }));
+          console.log(this.data, this.cacheData);
         }
       });
     },
@@ -370,8 +395,8 @@ export default {
                         delete item.fixed;
                         delete item.dataIndex;
                         data.forEach((item) => {
-                            item.ellipsis = true
-                            delete item.children;
+                          item.ellipsis = true;
+                          delete item.children;
                         });
                       } else {
                         delete item.children;
@@ -386,15 +411,13 @@ export default {
               }
             });
           } else {
-            item.ellipsis = true,
-            delete item.children;
+            (item.ellipsis = true), delete item.children;
             if (item.id == "239") {
               item.scopedSlots = { customRender: "operation" };
             }
           }
         });
         this.columns = [...res.data];
-        console.log(this.columns);
       });
     },
     //调用年份选择下拉框
