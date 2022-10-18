@@ -647,7 +647,6 @@ export default {
               this.fileList[item.type] = fileRow;
             }
           }
-          console.log(this.fileList);
         }
       });
     },

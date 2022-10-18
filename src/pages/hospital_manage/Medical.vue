@@ -88,19 +88,10 @@ const columns = [
   },
 ];
 const data = [];
-// for (let i = 0; i < 10; i++) {
-//   data.push({
-//     key: i.toString(),
-//     name: `Edrward ${i}`,
-//     age: 32,
-//     address: `London Park no. ${i}`,
-//   });
-// }
 export default {
   name: "Medical",
   components: { Select },
   data() {
-    // this.cacheData = data.map((item) => ({ ...item }));
     return {
       cacheData:[],
       data,

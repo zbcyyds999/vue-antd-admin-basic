@@ -30,9 +30,7 @@ module.exports = {
   hospital: `${BASE_URL}/target-hospital/Hospital`,//获取医院列表
   insert_view: `${BASE_URL}/file-view/insertView`,//提交审核意见
   get_view: `${BASE_URL}/file-view/getView`,//获取审核意见
-
-
-
+  edit_formula: `${BASE_URL}/formula-value/upFormula`,//编辑计分页面的数据
 
   
   file_upload: `${BASE_URL}/file/fileUpload`,//上传图片
@@ -41,6 +39,8 @@ module.exports = {
   
   get_strArray: `${BASE_URL}/region/getStrArray`,
   get_excel: `${BASE_URL}/region/getExcel`,//获取
+  get_table: `${BASE_URL}/region/getTable`,//可编辑的单元格
+
   find_tree: `${BASE_URL}/region/findTree`,//获取多级表头
   download: `${BASE_URL}/file/download`,//获取excel文件流
   

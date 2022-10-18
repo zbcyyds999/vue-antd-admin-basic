@@ -11,7 +11,6 @@ export default {
     name: "Select",
     data() {
         return {
-
             yearList: [
                 {
                     value: '2015',

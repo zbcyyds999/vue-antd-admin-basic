@@ -2,7 +2,6 @@ import * as XLSX from "xlsx";
 import * as XLSX2 from "xlsx-style";
 //导出为Excel方法
 function tableToExcel(tableID, fileName, headLength, colsLength, headColsLength) {
-  console.log(tableID, fileName, headLength, colsLength, headColsLength);
   // return
   console.time("导出总耗时");
   //先添加表格样式，再下载
@@ -37,15 +36,28 @@ function tableToExcel(tableID, fileName, headLength, colsLength, headColsLength)
       //不是多级表头直接计算单元格长度
       sheet['!cols'].push({
         wch: (sheet[arr[i] + '1'].v.length) * 2 + 3
+        
       })
     }
     //第二层循环，循环各列的每行数据，添加文字垂直居中
-    for (let k = 0; k < colsLength; k++) {
+    for (let k = 0; k <= 5; k++) {
       if (sheet[arr[i] + k]) {
         sheet[arr[i] + k].s = {
           alignment: {
-            horizontal: "center",
-            vertical: "center",
+            horizontal: "center", // 水平对齐-居中
+            vertical: "center",// 垂直对齐-居中
+            wrap_text: true
+          }
+        }
+      }
+
+    }
+    for (let k = 6; k <=colsLength; k++) {
+      if (sheet[arr[i] + k]) {
+        sheet[arr[i] + k].s = {
+          alignment: {
+            horizontal: "left", // 水平对齐 居左
+            vertical: "center",// 垂直对齐-居中
             wrap_text: true
           }
         }
@@ -54,6 +66,7 @@ function tableToExcel(tableID, fileName, headLength, colsLength, headColsLength)
     }
 
   }
+
   console.timeEnd("导出总耗时");
   downloadExcel(sheet2blob(sheet), `${fileName}.xlsx`); //下载
   // document.getElementById('app').removeChild(document.getElementById(tableID)) //每次下载完，删除下载生成的表格

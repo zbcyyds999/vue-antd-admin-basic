@@ -12,7 +12,7 @@
       :beforeUpload="beforeUpload"
       @change="handleFileChange"
     >
-      <a-button type="primary"  @click="saveExcel">导入Excel</a-button>
+      <a-button type="primary">导入Excel</a-button>
     </a-upload>
 
     <Select slot="extra" @getData="handleChangeYear"></Select>
@@ -38,18 +38,9 @@
       bordered
       size="middle"
       :pagination="false"
-      :scroll="{ x: 'calc(700px + 50%)' }"
-      :rowKey="
-        (record, index) => {
-          return index;
-        }
-      "
+      :scroll="{ x: 'calc(800px + 50%)' }"
     >
-      <template
-        v-for="col in ['Patient_satisfaction_score', 'Appointment_rate_score']"
-        :slot="col"
-        slot-scope="text, record"
-      >
+      <template v-for="col in cols" :slot="col" slot-scope="text, record">
         <div :key="col">
           <a-input
             v-if="record.editable"
@@ -66,18 +57,16 @@
         <div class="editable-row-operations">
           <span v-if="record.editable">
             <a @click="() => save(record.key)">保存</a>
-            <a-popconfirm title="确定取消?" @confirm="() => cancel(record.key)">
-              <a>取消</a>
-            </a-popconfirm>
+            <a @click="() => cancel(record.key)">取消</a>
           </span>
           <span v-else>
             <a :disabled="editingKey !== ''" @click="() => edit(record.key)"
               >计分</a
             >
             <a-divider type="vertical" />
-            <a>预览</a>
+            <a :disabled="editingKey !== ''">预览</a>
             <a-divider type="vertical" />
-            <a>下载</a>
+            <a :disabled="editingKey !== ''">下载</a>
           </span>
         </div>
       </template>
@@ -89,123 +78,16 @@ import Select from "../../components/select/Select";
 import {
   getTree,
   getExcel,
+  getTable,
   getScoringList,
   getStrArray,
+  editFormula
 } from "@/services/hospital";
 import { tableToExcel } from "@/utils/excel";
 import * as XLSX from "xlsx";
 
 const columns = [];
-const data = [
-  {
-    key: 1,
-    name: `北京市宣武中医医院`,
-    Patient_satisfaction_formula: "无",
-    Patient_satisfaction_value: "无",
-    Patient_satisfaction_score: "8",
-    Appointment_rate_formula: "(150300/140000)*100%",
-    Appointment_rate_value: "10.73%",
-    Appointment_rate_score: "8",
-    complaint_rate_formula: "(150300/140000)*100%",
-    complaint_rate_value: "7%",
-    complaint_rate_score: "7",
-  },
-  {
-    key: 2,
-    name: `北京市中医药大学护国寺中医医院`,
-    Patient_satisfaction_formula: "无",
-    Patient_satisfaction_value: "无",
-    Patient_satisfaction_score: "7.6",
-    Appointment_rate_formula: "(150300/140000)*100%",
-    Appointment_rate_value: "11.4%",
-    Appointment_rate_score: "8.3",
-    complaint_rate_formula: "(150300/140000)*100%",
-    complaint_rate_value: "7%",
-    complaint_rate_score: "7",
-  },
-  {
-    key: 3,
-    name: `北京市西城区展览路医院`,
-    Patient_satisfaction_formula: "无",
-    Patient_satisfaction_value: "无",
-    Patient_satisfaction_score: "9.1",
-    Appointment_rate_formula: "(170300/140000)*100%",
-    Appointment_rate_value: "17.73%",
-    Appointment_rate_score: "9",
-    complaint_rate_formula: "(150300/140000)*100%",
-    complaint_rate_value: "8.4%",
-    complaint_rate_score: "7",
-  },
-  {
-    key: 4,
-    name: `北京市第二医院`,
-    Patient_satisfaction_formula: "无",
-    Patient_satisfaction_value: "无",
-    Patient_satisfaction_score: "9",
-    Appointment_rate_formula: "(120300/140000)*100%",
-    Appointment_rate_value: "8.68%",
-    Appointment_rate_score: "7.9",
-    complaint_rate_formula: "(150300/140000)*100%",
-    complaint_rate_value: "7%",
-    complaint_rate_score: "7",
-  },
-  {
-    key: 5,
-    name: `北京市回民医院`,
-    Patient_satisfaction_formula: "无",
-    Patient_satisfaction_value: "无",
-    Patient_satisfaction_score: "8",
-    Appointment_rate_formula: "(150300/140000)*100%",
-    Appointment_rate_value: "11.63%",
-    Appointment_rate_score: "8.2",
-    complaint_rate_formula: "(150300/140000)*100%",
-    complaint_rate_value: "7%",
-    complaint_rate_score: "7",
-  },
-  {
-    key: 6,
-    name: `北京市丰盛中医骨伤专科医院`,
-    Patient_satisfaction_formula: "无",
-    Patient_satisfaction_value: "无",
-    Patient_satisfaction_score: "8",
-    Appointment_rate_formula: "(150300/140000)*100%",
-    Appointment_rate_value: "10.73%",
-    Appointment_rate_score: "8",
-    complaint_rate_formula: "(150300/140000)*100%",
-    complaint_rate_value: "7%",
-    complaint_rate_score: "7",
-  },
-  {
-    key: 7,
-    name: `首都医科大学附属复兴医院`,
-    street: "8",
-    gender: "M",
-  },
-  {
-    key: 8,
-    name: `北京市西城区妇幼保健院`,
-    street: "8",
-    gender: "M",
-  },
-  {
-    key: 9,
-    name: `北京市西城区广外医院`,
-    street: "8",
-    gender: "M",
-  },
-  {
-    key: 10,
-    name: `北京市肛肠医院`,
-    street: "7",
-    gender: "M",
-  },
-  {
-    key: 11,
-    name: `北京市西城区平安医院`,
-    street: "8",
-    gender: "M",
-  },
-];
+const data = [];
 export default {
   name: "Scoring_new",
   components: { Select },
@@ -214,13 +96,14 @@ export default {
     return {
       data,
       columns,
+      cols: [],
       datas: [],
       excels: [],
       hideTableId: "sheet",
       Treedata: [],
       year: "2020",
       editingKey: "",
-      weekdata:{}
+      weekdata: {},
     };
   },
   methods: {
@@ -245,7 +128,6 @@ export default {
       });
     },
     saveExcel() {
-      console.log(this.weekdata);
       getStrArray(this.datas).then((res) => {
         if (res.status == "200") {
           console.log(res);
@@ -263,37 +145,40 @@ export default {
             // 以二进制流方式读取得到整份excel表格对象
             let data = e.target.result,
               workbook = XLSX.read(data, { type: "binary" });
+            let weekdata = {};
             for (let i = 0; i < 2; i++) {
               const SheetName = workbook.SheetNames[i]; // 取第一张表
               let sheetInfos = workbook.Sheets[SheetName];
+
               if (i == 1) {
-                let arr = XLSX.utils.sheet_to_json(sheetInfos);
-                this.weekdata.formula = arr;
-              }
-              if (i == 2) {
-                let arr = XLSX.utils.sheet_to_json(sheetInfos);
-                this.weekdata.values = arr;
-              } else {
                 let arr = XLSX.utils.sheet_to_json(sheetInfos, {
                   header: 1,
                   defval: "",
                 });
                 let batteryArr = [];
-                for (var j = 5; j < arr.length; j++) {
+                for (var j = 0; j < arr.length; j++) {
                   batteryArr.push(arr[j]);
                 }
-                this.weekdata.original = batteryArr;
+                weekdata.formula = batteryArr;
               }
+              if (i == 0) {
+                let arr = XLSX.utils.sheet_to_json(sheetInfos, {
+                  header: 1,
+                  defval: "",
+                });
+                let batteryArr = [];
+                for (var k = 5; k < arr.length; k++) {
+                  batteryArr.push(arr[k]);
+                }
+                weekdata.values = batteryArr;
+              }
+              console.log(weekdata);
             }
-                     // arr.map(() => {
-            //          let obj = {}
-            //          //对获取的Excel数据进行操作
-            //          arr.push(obj)
-            //     })
-            //     console.log(arr);
-
-            // let ids = {};
-            // ids.data1 = batteryArr;
+            getStrArray(weekdata).then((res) => {
+              if (res.status == "200") {
+                console.log(res);
+              }
+            });
             resolve();
             // this.saveExcel(this.weekdata)
           } catch (e) {
@@ -302,10 +187,8 @@ export default {
           }
         };
         reader.readAsBinaryString(file);
-        
       });
     },
-
     exportData() {
       var fileName = "绩效计分";
       const data = this.data;
@@ -345,10 +228,35 @@ export default {
         }
       });
     },
+    getTables() {
+      getTable().then((res) => {
+        if (res.status == "200") {
+          this.cols = res.data;
+        }
+      });
+    },
     getList() {
       getScoringList(this.year).then((res) => {
         if (res.data.code == 200) {
-          this.data = res.data.obj;
+          const datas = []
+          const data = res.data.obj;
+          const formulaValues = data[0];
+          const targetHospitals = data[1];
+          formulaValues.forEach((item) => {
+            targetHospitals.forEach((item2) => {
+              if(item.employeeNo==item2.employeeNo){
+                const value = Object.assign(item,item2)
+                datas.push(value)
+              }
+          });
+         
+          });
+         console.log(datas);
+          datas.map((item) => {
+            item.key = item.id.toString()
+            return item;
+          });
+          this.data = [...datas]
           this.cacheData = this.data.map((item) => ({ ...item }));
           console.log(this.data, this.cacheData);
         }
@@ -356,12 +264,84 @@ export default {
     },
     getTree() {
       getTree().then((res) => {
-        const data = [...res.data];
-        data.pop(); //删除操作表头
-        data.forEach((item) => {
-          item.fixed = null;
+        res.data.forEach((item) => {
+          if (item.children.length != "0") {
+            let data = item.children;
+            delete item.id;
+            delete item.width;
+            delete item.superId;
+            delete item.fixed;
+            delete item.dataIndex;
+            data.forEach((item) => {
+              if (item.children.length != "0") {
+                let data = item.children;
+                delete item.id;
+                delete item.width;
+                delete item.superId;
+                delete item.fixed;
+                delete item.dataIndex;
+                data.forEach((item) => {
+                  if (item.children.length != "0") {
+                    let data = item.children;
+                    delete item.id;
+                    delete item.width;
+                    delete item.superId;
+                    delete item.fixed;
+                    delete item.dataIndex;
+                    data.forEach((item) => {
+                      if (item.children.length != "0") {
+                        let data = item.children;
+                        delete item.id;
+                        delete item.width;
+                        delete item.superId;
+                        delete item.fixed;
+                        delete item.dataIndex;
+                        data.forEach((item) => {
+                          item.ellipsis = true;
+                          delete item.children;
+                          item.scopedSlots = { customRender: item.dataIndex };
+                        });
+                      } else {
+                        delete item.children;
+                      }
+                    });
+                  } else {
+                    delete item.children;
+                  }
+                });
+              } else {
+                delete item.children;
+              }
+            });
+          } else {
+            (item.ellipsis = true), delete item.children;
+
+            if (item.dataIndex == "operation") {
+              item.scopedSlots = { customRender: "operation" };
+            }
+          }
         });
-        this.Treedata = [...data];
+
+        this.columns = [...res.data];
+        console.log(this.columns);
+      });
+    },
+    editFormulaValue(data) {
+      editFormula(data).then((response) => {
+        if (response.data.code == 200) {
+          this.$message.success({
+            content: response.data.message,
+          });
+        } else {
+          this.$message.error({
+            content: response.data.message,
+          });
+        }
+      });
+    },
+    getExcelTree() {
+      getTree().then((res) => {
+        let trdata = [...res.data];
         res.data.forEach((item) => {
           if (item.children.length != "0") {
             let data = item.children;
@@ -412,12 +392,18 @@ export default {
             });
           } else {
             (item.ellipsis = true), delete item.children;
-            if (item.id == "239") {
+            if (item.dataIndex == "operation") {
               item.scopedSlots = { customRender: "operation" };
             }
           }
         });
-        this.columns = [...res.data];
+        if (trdata[trdata.length - 1].dataIndex == "operation") {
+          trdata.pop(); //删除操作
+          trdata.map((item) => {
+            item.fixed = null;
+          });
+          this.Treedata = trdata;
+        }
       });
     },
     //调用年份选择下拉框
@@ -449,6 +435,7 @@ export default {
       const targetCache = newCacheData.find((item) => key === item.key);
       if (target && targetCache) {
         delete target.editable;
+        this.editFormulaValue(target)
         this.data = newData;
         Object.assign(targetCache, target);
         this.cacheData = newCacheData;
@@ -470,7 +457,9 @@ export default {
     },
   },
   created() {
+    this.getTables();
     this.getTree();
+    this.getExcelTree();
     this.getExcels();
     this.getList();
   },

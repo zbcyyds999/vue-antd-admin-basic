@@ -2,7 +2,7 @@ import { request, METHOD } from '@/utils/request'
 import {
     edit_target, getInput_data, find_input, get_manageList,get_excel,get_strArray,
     find_tree, get_list, file_upload, file_id, file_list, edit_man, get_scoringList, download,hospital,
-    insert_view,get_view
+    insert_view,get_view,get_table,edit_formula
 } from '@/services/api'
 
 /**
@@ -95,6 +95,10 @@ export async function getTree() {
     return request(find_tree, METHOD.GET
     )
 }
+export async function getTable() {
+    return request(get_table, METHOD.GET
+    )
+}
 export async function getStrArray(data) {
     return request(get_strArray, METHOD.POST, data)
 }
@@ -102,6 +106,9 @@ export async function getStrArray(data) {
 export async function getExcel() {
     return request(get_excel, METHOD.GET
     )
+}
+export async function editFormula(data) {
+    return request(edit_formula, METHOD.POST, data)
 }
 /**
  * 获取医院列表
@@ -127,6 +134,7 @@ export default {
     uptarget,
     getInput,
     getTree,
+    editFormula,
     getExcel,
     getHospital,
     editMan,
