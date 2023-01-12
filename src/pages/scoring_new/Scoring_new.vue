@@ -83,9 +83,9 @@ import {
   getStrArray,
   editFormula
 } from "@/services/hospital";
+import {excelSheet} from "./excelSheet"
 import { tableToExcel } from "@/utils/excel";
 import * as XLSX from "xlsx";
-
 const columns = [];
 const data = [];
 export default {
@@ -96,6 +96,7 @@ export default {
     return {
       data,
       columns,
+      
       cols: [],
       datas: [],
       excels: [],
@@ -146,22 +147,9 @@ export default {
             let data = e.target.result,
               workbook = XLSX.read(data, { type: "binary" });
             let weekdata = {};
-            for (let i = 0; i < 2; i++) {
-              const SheetName = workbook.SheetNames[i]; // 取第一张表
+            weekdata.formula = excelSheet;
+              const SheetName = workbook.SheetNames[0]; // 取第一张表
               let sheetInfos = workbook.Sheets[SheetName];
-
-              if (i == 1) {
-                let arr = XLSX.utils.sheet_to_json(sheetInfos, {
-                  header: 1,
-                  defval: "",
-                });
-                let batteryArr = [];
-                for (var j = 0; j < arr.length; j++) {
-                  batteryArr.push(arr[j]);
-                }
-                weekdata.formula = batteryArr;
-              }
-              if (i == 0) {
                 let arr = XLSX.utils.sheet_to_json(sheetInfos, {
                   header: 1,
                   defval: "",
@@ -171,14 +159,14 @@ export default {
                   batteryArr.push(arr[k]);
                 }
                 weekdata.values = batteryArr;
-              }
+              
               console.log(weekdata);
-            }
-            getStrArray(weekdata).then((res) => {
-              if (res.status == "200") {
-                console.log(res);
-              }
-            });
+            
+            // getStrArray(weekdata).then((res) => {
+            //   if (res.status == "200") {
+            //     console.log(res);
+            //   }
+            // });
             resolve();
             // this.saveExcel(this.weekdata)
           } catch (e) {
@@ -251,14 +239,12 @@ export default {
           });
          
           });
-         console.log(datas);
           datas.map((item) => {
             item.key = item.id.toString()
             return item;
           });
           this.data = [...datas]
           this.cacheData = this.data.map((item) => ({ ...item }));
-          console.log(this.data, this.cacheData);
         }
       });
     },
@@ -323,7 +309,6 @@ export default {
         });
 
         this.columns = [...res.data];
-        console.log(this.columns);
       });
     },
     editFormulaValue(data) {
@@ -403,6 +388,7 @@ export default {
             item.fixed = null;
           });
           this.Treedata = trdata;
+          console.log(trdata,1111);
         }
       });
     },

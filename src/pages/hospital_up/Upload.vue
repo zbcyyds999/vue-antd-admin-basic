@@ -275,13 +275,13 @@
                   </a-modal>
                 </a-form-item>
                 <div v-for="(itm, index) in steps" :key="index">
-                <a-form-item
-                  label="审核意见"
-                  style="color: red; font-size: 24px"
-                  v-if="itm.type == item.prop"
-                  >{{ itm.view }}</a-form-item
-                >
-              </div>
+                  <a-form-item
+                    label="审核意见"
+                    style="color: red; font-size: 24px"
+                    v-if="itm.type == item.prop"
+                    >{{ itm.view }}</a-form-item
+                  >
+                </div>
               </a-col>
             </div>
           </a-row>
@@ -387,7 +387,6 @@ export default {
     },
     getViews() {
       getView(this.employeeNo, this.year).then((res) => {
-        console.log(res.data);
         if (res.data.length > "0") {
           this.visible = true;
           this.steps = res.data;
@@ -399,7 +398,7 @@ export default {
       this.year = value;
       //重新请求文本框的值
       this.value = {};
-      this.steps=[];
+      this.steps = [];
       this.fileList = { SciFiles: [], CoreFiles: [], FormalFiles: [] };
       this.form.resetFields();
       this.getInputValue();
@@ -449,7 +448,6 @@ export default {
     },
     getInputValue() {
       getData(this.employeeNo, this.year).then((response) => {
-        console.log(response.data.obj);
         if (response.data.code == 200) {
           let res = response.data.obj[0];
           this.upList.map((item) => {
@@ -526,15 +524,19 @@ export default {
             FormalFiles: [],
           };
           const photo = res.data.obj.map((item) => {
-            let index = item.filepath.lastIndexOf("\\");
-            let url = location.protocol + '//' + location.host+'/img/'
+            let index =''
+            if (item.filepath.indexOf("/") != -1) {
+               index = item.filepath.lastIndexOf("/");
+            } else {
+               index = item.filepath.lastIndexOf("\\");
+            }
+            let url = location.protocol + "//" + location.host + "/img/";
             return {
               uid: item.id,
               status: "done",
               name: item.filename,
               url:
-                url +
-                item.filepath.substring(index + 1, item.filepath.length),
+                url + item.filepath.substring(index + 1, item.filepath.length),
               type: item.type,
             };
           });
@@ -576,7 +578,6 @@ export default {
         if (!err) {
           values.years = this.year;
           values.employeeNo = this.employeeNo;
-          console.log(values);
           uptarget(values).then((response) => {
             if (response.data.code == 200) {
               this.$message.success({

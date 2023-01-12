@@ -84,7 +84,7 @@ const options = {
           {
               path: 'manageList',
               name: '医管中心上传',
-              // component: () => import('@/pages/manage_list')
+              component: () => import('@/pages/manage_list')
           },
          
           {

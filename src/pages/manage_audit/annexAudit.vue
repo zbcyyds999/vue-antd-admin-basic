@@ -623,7 +623,12 @@ export default {
             FormalFiles: [],
           };
           const photo = res.data.obj.map((item) => {
-            let index = item.filepath.lastIndexOf("\\");
+            let index =''
+            if (item.filepath.indexOf("/") != -1) {
+               index = item.filepath.lastIndexOf("/");
+            } else {
+               index = item.filepath.lastIndexOf("\\");
+            }
             let url = location.protocol + '//' + location.host+'/img/'
             return {
               uid: item.id,

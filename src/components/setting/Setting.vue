@@ -9,9 +9,9 @@
         @change="values => setTheme({...theme, mode: values[0]})"
         :default-values="[theme.mode]"
       >
-        <img-checkbox :title="$t('theme.dark')" img="https://gw.alipayobjects.com/zos/rmsportal/LCkqqYNmvBEbokSDscrm.svg" value="dark"/>
-        <img-checkbox :title="$t('theme.light')" img="https://gw.alipayobjects.com/zos/rmsportal/jpRkZQMyYRryryPNtyIC.svg" value="light"/>
-        <img-checkbox :title="$t('theme.night')" img="https://gw.alipayobjects.com/zos/antfincdn/hmKaLQvmY2/LCkqqYNmvBEbokSDscrm.svg" value="night"/>
+        <img-checkbox :title="$t('theme.dark')" img="./../../../public/imgs/LCkqqYNmvBEbokSDscrm.svg" value="dark"/>
+        <img-checkbox :title="$t('theme.light')" img="./../../../public/imgs/jpRkZQMyYRryryPNtyIC.svg" value="light"/>
+        <img-checkbox :title="$t('theme.night')" img="./../../../public/imgs/LCkqqYNmvBEbokSDscrm1.svg" value="night"/>
       </img-checkbox-group>
     </setting-item>
     <setting-item :title="$t('theme.color')">
@@ -28,9 +28,9 @@
         @change="values => setLayout(values[0])"
         :default-values="[layout]"
       >
-        <img-checkbox :title="$t('navigate.side')" img="https://gw.alipayobjects.com/zos/rmsportal/JopDzEhOqwOjeNTXkoje.svg" value="side"/>
+        <!-- <img-checkbox :title="$t('navigate.side')" img="https://gw.alipayobjects.com/zos/rmsportal/JopDzEhOqwOjeNTXkoje.svg" value="side"/>
         <img-checkbox :title="$t('navigate.head')" img="https://gw.alipayobjects.com/zos/rmsportal/KDNDBbriJhLwuqMoxcAr.svg" value="head"/>
-        <img-checkbox :title="$t('navigate.mix')" img="https://gw.alipayobjects.com/zos/antfincdn/x8Ob%26B8cy8/LCkqqYNmvBEbokSDscrm.svg" value="mix"/>
+        <img-checkbox :title="$t('navigate.mix')" img="https://gw.alipayobjects.com/zos/antfincdn/x8Ob%26B8cy8/LCkqqYNmvBEbokSDscrm.svg" value="mix"/> -->
       </img-checkbox-group>
     </setting-item>
     <setting-item>

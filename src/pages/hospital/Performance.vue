@@ -285,6 +285,47 @@ export default {
 </script>
 
 
-<style scoped lang="scss">
-@import "index.less";
+<style >
+
+.form {
+  padding: 0px 80px;
+}
+
+.form_task::-webkit-scrollbar {
+  width: 4px;
+  /* height: 4px;*/
+}
+
+.form_task::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0);
+  background: rgba(0, 0, 0, 0);
+}
+
+.form_task::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0);
+  border-radius: 0;
+  background: rgba(0, 0, 0, 0);
+}
+
+.form_task {
+  overflow-y: auto;
+  max-height: 300px;
+  /*margin: 20px  auto;*/
+
+}
+
+.card {
+  height: 145px;
+  margin-bottom: 18px;
+}
+
+.card2 {
+  height: 677px;
+
+}
+
+.card3 {
+  text-align: center;
+}
 </style>

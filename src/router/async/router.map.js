@@ -54,10 +54,10 @@ const routerMap = {
     path: 'employee',
     component: () => import('@/pages/employee')
   },
-  exchange: {
-    name: '医院信息',
-    path: 'exchange',
-    component: () => import('@/pages/hospital')
-  }
+  // exchange: {
+  //   name: '医院信息',
+  //   path: 'exchange',
+  //   component: () => import('@/pages/hospital')
+  // }
 }
 export default routerMap
